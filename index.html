@@ -8,197 +8,238 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
 font-family: 'Poppins', sans-serif;
 background: #1a0f0a;
 color: #fff;
 overflow-x: hidden;
-min-height: 100vh;
-background-image: url('https://i.ibb.co/V0PPxDSF/file-0000000044e87246bcef229b937bebea.png');
-background-size: cover;
-background-position: center;
-background-attachment: fixed;
-background-repeat: no-repeat;
+perspective: 1200px;
 }
 
-body::before {
+/* Layer 1: Background - slow parallax */
+.layer-back {
+position: fixed;
+top: 0; left: 0;
+width: 100%; height: 100%;
+z-index: 0;
+transform-style: preserve-3d;
+will-change: transform;
+}
+
+.layer-back img {
+position: absolute;
+bottom: 0; left: 50%;
+transform: translateX(-50%);
+width: 70%;
+max-width: 900px;
+height: auto;
+opacity: 0.35;
+object-fit: contain;
+object-position: bottom;
+pointer-events: none;
+}
+
+.layer-back::after {
 content: '';
 position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
+top: 0; left: 0;
+width: 100%; height: 100%;
 background: linear-gradient(
-135deg,
-rgba(26, 15, 10, 0.92) 0%,
-rgba(26, 15, 10, 0.75) 50%,
-rgba(26, 15, 10, 0.88) 100%
+180deg,
+rgba(26,15,10,0.95) 0%,
+rgba(26,15,10,0.7) 30%,
+rgba(26,15,10,0.5) 60%,
+rgba(26,15,10,0.85) 100%
 );
-z-index: 0;
+}
+
+/* Layer 2: Content - front */
+.layer-front {
+position: relative;
+z-index: 1;
+transform-style: preserve-3d;
+}
+
+.scene-3d {
+transform-style: preserve-3d;
+will-change: transform;
 }
 
 .container {
-position: relative;
-z-index: 1;
-max-width: 1100px;
+max-width: 1000px;
 margin: 0 auto;
 padding: 20px;
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-justify-content: center;
 }
 
 header {
 text-align: center;
-padding: 40px 0 30px;
+padding: 60px 0 40px;
+transform-style: preserve-3d;
 }
 
 .brand-icon {
-font-size: 60px;
-margin-bottom: 15px;
+font-size: 70px;
 display: block;
+margin-bottom: 15px;
+filter: drop-shadow(0 0 30px rgba(245,215,161,0.3));
+animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+0%, 100% { transform: translateY(0); }
+50% { transform: translateY(-10px); }
 }
 
 h1 {
 font-family: 'Playfair Display', serif;
-font-size: 4rem;
+font-size: 4.5rem;
 font-weight: 700;
-color: #f5d7a1;
-text-shadow: 0 2px 20px rgba(245, 215, 161, 0.3);
+background: linear-gradient(135deg, #f5d7a1, #e8b87a, #f5d7a1);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+text-shadow: none;
+filter: drop-shadow(0 2px 30px rgba(245,215,161,0.2));
 letter-spacing: 2px;
 }
 
 .subtitle {
-font-size: 1.2rem;
+font-size: 1.1rem;
 color: #d4a574;
-letter-spacing: 6px;
+letter-spacing: 8px;
 text-transform: uppercase;
-margin-top: 10px;
+margin-top: 12px;
 font-weight: 300;
 }
 
 .hero {
 text-align: center;
-padding: 40px 0;
+padding: 50px 0;
+transform-style: preserve-3d;
 }
 
 .hero p {
-font-size: 1.15rem;
-line-height: 1.9;
+font-size: 1.1rem;
+line-height: 2;
 color: #e8d5c0;
-max-width: 650px;
-margin: 0 auto 20px;
+max-width: 600px;
+margin: 0 auto 25px;
 font-weight: 300;
 }
 
 .cta-button {
 display: inline-block;
-padding: 16px 45px;
+padding: 16px 50px;
 background: linear-gradient(135deg, #d4a574, #c4915a);
 color: #1a0f0a;
 text-decoration: none;
 border-radius: 50px;
 font-weight: 600;
-font-size: 1.15rem;
+font-size: 1.1rem;
 transition: all 0.4s ease;
-border: none;
-cursor: pointer;
-box-shadow: 0 8px 30px rgba(212, 165, 116, 0.3);
+box-shadow: 0 8px 30px rgba(212,165,116,0.3);
+transform-style: preserve-3d;
 }
 
 .cta-button:hover {
-transform: translateY(-3px) scale(1.02);
-box-shadow: 0 12px 40px rgba(212, 165, 116, 0.5);
-background: linear-gradient(135deg, #e0b88a, #d4a574);
+transform: translateY(-3px) scale(1.03);
+box-shadow: 0 15px 50px rgba(212,165,116,0.5);
 }
 
-.features {
+.card-grid {
 display: grid;
-grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-gap: 25px;
-padding: 40px 0;
+grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+gap: 30px;
+padding: 50px 0;
+perspective: 1000px;
 }
 
-.feature-card {
-background: rgba(255, 255, 255, 0.06);
-backdrop-filter: blur(15px);
--webkit-backdrop-filter: blur(15px);
-border-radius: 20px;
-padding: 30px;
+.card-3d {
+background: rgba(255,255,255,0.05);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border-radius: 24px;
+padding: 35px 25px;
 text-align: center;
-border: 1px solid rgba(245, 215, 161, 0.1);
-transition: all 0.4s ease;
+border: 1px solid rgba(245,215,161,0.08);
+transform-style: preserve-3d;
+transition: transform 0.1s ease-out;
+will-change: transform;
+cursor: default;
 }
 
-.feature-card:hover {
-transform: translateY(-8px);
-background: rgba(255, 255, 255, 0.1);
-border-color: rgba(245, 215, 161, 0.3);
-box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+.card-3d:hover {
+border-color: rgba(245,215,161,0.25);
 }
 
-.feature-card .icon {
-font-size: 40px;
-margin-bottom: 15px;
+.card-3d .icon {
+font-size: 48px;
 display: block;
+margin-bottom: 18px;
+transform: translateZ(30px);
 }
 
-.feature-card h3 {
+.card-3d h3 {
 font-family: 'Playfair Display', serif;
 color: #f5d7a1;
 font-size: 1.3rem;
-margin-bottom: 10px;
+margin-bottom: 12px;
+transform: translateZ(20px);
 }
 
-.feature-card p {
+.card-3d p {
 color: #c4b5a8;
-font-size: 0.95rem;
-line-height: 1.6;
+font-size: 0.92rem;
+line-height: 1.7;
 font-weight: 300;
+transform: translateZ(10px);
 }
 
 .phone-section {
 text-align: center;
-padding: 30px 0;
+padding: 50px 0;
+transform-style: preserve-3d;
 }
 
 .phone-link {
 display: inline-flex;
 align-items: center;
 gap: 15px;
-padding: 18px 40px;
-background: rgba(255, 255, 255, 0.08);
+padding: 18px 45px;
+background: rgba(255,255,255,0.06);
 backdrop-filter: blur(15px);
 -webkit-backdrop-filter: blur(15px);
 border-radius: 50px;
 text-decoration: none;
 color: #f5d7a1;
-font-size: 1.5rem;
+font-size: 1.6rem;
 font-weight: 600;
-border: 1px solid rgba(245, 215, 161, 0.2);
+border: 1px solid rgba(245,215,161,0.15);
 transition: all 0.4s ease;
+transform-style: preserve-3d;
 }
 
 .phone-link:hover {
-background: rgba(245, 215, 161, 0.15);
+background: rgba(245,215,161,0.12);
 border-color: #f5d7a1;
 transform: scale(1.05);
-box-shadow: 0 0 40px rgba(245, 215, 161, 0.2);
+box-shadow: 0 0 50px rgba(245,215,161,0.2);
 }
 
-.phone-link .icon {
-font-size: 28px;
+.phone-link .icon { font-size: 30px; }
+
+.phone-hint {
+color: #8a7a6e;
+margin-top: 15px;
+font-size: 0.85rem;
+font-weight: 300;
 }
 
 .map-section {
-padding: 40px 0;
+padding: 50px 0;
+transform-style: preserve-3d;
 }
 
 .map-section h2 {
@@ -210,42 +251,62 @@ margin-bottom: 25px;
 }
 
 .map-container {
-border-radius: 20px;
+border-radius: 24px;
 overflow: hidden;
-border: 2px solid rgba(245, 215, 161, 0.15);
-box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+border: 2px solid rgba(245,215,161,0.12);
+box-shadow: 0 15px 50px rgba(0,0,0,0.5);
+transform-style: preserve-3d;
 }
 
 .map-container iframe {
 width: 100%;
-height: 400px;
+height: 380px;
 display: block;
 border: none;
 }
 
 footer {
 text-align: center;
-padding: 30px 0;
-color: #8a7a6e;
+padding: 40px 0;
+color: #6a5a4e;
 font-size: 0.85rem;
 font-weight: 300;
 }
 
+/* Scroll progress bar */
+.scroll-progress {
+position: fixed;
+top: 0; left: 0;
+height: 3px;
+background: linear-gradient(90deg, #d4a574, #f5d7a1);
+z-index: 1000;
+width: 0%;
+transition: width 0.1s linear;
+}
+
 @media (max-width: 768px) {
-.container { padding: 15px; }
-h1 { font-size: 2.5rem; }
-.subtitle { font-size: 0.9rem; letter-spacing: 4px; }
-.hero p { font-size: 1rem; }
-.phone-link { font-size: 1.2rem; padding: 15px 25px; }
-.features { grid-template-columns: 1fr; }
-.map-container iframe { height: 300px; }
+.layer-back img { width: 100%; }
+h1 { font-size: 2.8rem; }
+.subtitle { font-size: 0.85rem; letter-spacing: 5px; }
+.hero p { font-size: 0.95rem; }
+.phone-link { font-size: 1.2rem; padding: 14px 25px; }
+.card-grid { grid-template-columns: 1fr; }
+.map-container iframe { height: 280px; }
 }
 </style>
 </head>
 <body>
 
-<div class="container">
+<div class="scroll-progress" id="progressBar"></div>
 
+<div class="layer-back" id="layerBack">
+<img src="https://i.ibb.co/V0PPxDSF/file-0000000044e87246bcef229b937bebea.png" alt="">
+</div>
+
+<div class="layer-front" id="layerFront">
+
+<div class="scene-3d" id="scene3d">
+<div class="container">
 <header>
 <span class="brand-icon">🥖</span>
 <h1>Raximjon Nonvoyxonasi</h1>
@@ -254,59 +315,120 @@ h1 { font-size: 2.5rem; }
 
 <section class="hero">
 <p>
-Raximjon Nonvoyxonasida an'anaviy usulda, tabiiy masalliqlar bilan tayyorlangan
-eng mazali non mahsulotlarini topishingiz mumkin. Har kuni ertalab yangi pishirilgan
-nonlar sizni kutmoqda!
+An'anaviy usulda, tabiiy masalliqlar bilan tayyorlangan eng mazali non mahsulotlari.
+Har kuni ertalab yangi pishirilgan nonlar sizni kutmoqda!
 </p>
 <a href="#phone" class="cta-button">Buyurtma berish</a>
 </section>
+</div>
+</div>
 
-<section class="features">
-<div class="feature-card">
+<div class="scene-3d" id="sceneCards">
+<div class="container">
+<div class="card-grid" id="cardGrid">
+<div class="card-3d" data-index="0">
 <span class="icon">🍞</span>
 <h3>An'anaviy Nonlar</h3>
 <p>O'zbek an'anaviy usulida tayyorlangan dimlama va tandir nonlari</p>
 </div>
-<div class="feature-card">
+<div class="card-3d" data-index="1">
 <span class="icon">🥐</span>
 <h3>Buločka Mahsulotlari</h3>
 <p>Yumshoq va mazali buločka, shtrudel va boshqa qandolatchilik mahsulotlari</p>
 </div>
-<div class="feature-card">
+<div class="card-3d" data-index="2">
 <span class="icon">⏰</span>
 <h3>Ertalabki Yetkazish</h3>
-<p>Har kuni 06:00 dan boshlab yangi nonlar tayyor. Tezkor yetkazib berish xizmati</p>
+<p>Har kuni 06:00 dan boshlab yangi nonlar tayyor. Tezkor yetkazib berish</p>
 </div>
-</section>
+</div>
+</div>
+</div>
 
+<div class="scene-3d" id="scenePhone">
+<div class="container">
 <section class="phone-section" id="phone">
 <a href="tel:+998993921157" class="phone-link">
 <span class="icon">📞</span>
 +998 99 392 11 57
 </a>
-<p style="color: #c4b5a8; margin-top: 15px; font-size: 0.9rem; font-weight: 300;">
-Telefon raqamga bosish orqali avtomatik qo'ng'iroq qilishingiz mumkin
-</p>
+<p class="phone-hint">Telefon raqamga bosish orqali avtomatik qo'ng'iroq</p>
 </section>
+</div>
+</div>
 
+<div class="scene-3d" id="sceneMap">
+<div class="container">
 <section class="map-section">
-<h2>📍 Bizning Manzil</h2>
+<h2>Bizning Manzil</h2>
 <div class="map-container">
 <iframe
 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6000!2d71.67257!3d40.9983!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38bb4f46ac0e7a8b%3A0x77b341a998c4a008!2sNonvoyxonA!5e0!3m2!1sen!2s!4v1"
-allowfullscreen=""
-loading="lazy"
-referrerpolicy="no-referrer-when-downgrade"
-title="Raximjon Nonvoyxonasi joylashuvi"
-></iframe>
+allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+title="Raximjon Nonvoyxonasi joylashuvi"></iframe>
 </div>
 </section>
+</div>
+</div>
 
+<div class="scene-3d">
+<div class="container">
 <footer>
 <p>&copy; 2026 Raximjon Nonvoyxonasi. Barcha huquqlar himoyalangan.</p>
 </footer>
+</div>
+</div>
 
 </div>
+
+<script>
+const layerBack = document.getElementById('layerBack');
+const scene3d = document.getElementById('scene3d');
+const sceneCards = document.getElementById('sceneCards');
+const scenePhone = document.getElementById('scenePhone');
+const sceneMap = document.getElementById('sceneMap');
+const cards = document.querySelectorAll('.card-3d');
+const progressBar = document.getElementById('progressBar');
+
+function handleScroll() {
+const t = window.scrollY;
+const h = document.documentElement.scrollHeight - window.innerHeight;
+const p = h > 0 ? t / h : 0;
+
+progressBar.style.width = (p * 100) + '%';
+
+const rx = (t * 0.03);
+const ry = (t * 0.015);
+layerBack.style.transform =
+'translateY(' + (t * 0.08) + 'px) rotateX(' + (rx * 0.3) + 'deg) rotateY(' + (ry * 0.5) + 'deg)';
+
+scene3d.style.transform = 'rotateX(' + (rx * 0.6) + 'deg) rotateY(' + (ry * 0.4) + 'deg)';
+sceneCards.style.transform = 'rotateX(' + (rx * 0.4) + 'deg) rotateY(' + (ry * 0.3) + 'deg)';
+scenePhone.style.transform = 'rotateX(' + (rx * 0.2) + 'deg) rotateY(' + (ry * 0.2) + 'deg)';
+sceneMap.style.transform = 'rotateX(' + (rx * 0.1) + 'deg) rotateY(' + (ry * 0.1) + 'deg)';
+}
+
+window.addEventListener('scroll', handleScroll, { passive: true });
+handleScroll();
+
+cards.forEach(card => {
+card.addEventListener('mousemove', function(e) {
+const r = this.getBoundingClientRect();
+const x = e.clientX - r.left;
+const y = e.clientY - r.top;
+const cx = r.width / 2;
+const cy = r.height / 2;
+const dx = (x - cx) / cx;
+const dy = (y - cy) / cy;
+this.style.transform =
+'perspective(1000px) rotateY(' + (dx * 12) + 'deg) rotateX(' + (-dy * 12) + 'deg) translateZ(10px)';
+});
+
+card.addEventListener('mouseleave', function() {
+this.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg) translateZ(0px)';
+});
+});
+</script>
 
 </body>
 </html>
