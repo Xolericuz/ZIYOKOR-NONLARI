@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raximjon Nonvoyxonasi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+font-family: 'Poppins', sans-serif;
+background: #1a0f0a;
+color: #fff;
+overflow-x: hidden;
+min-height: 100vh;
+background-image: url('https://i.ibb.co/V0PPxDSF/file-0000000044e87246bcef229b937bebea.png');
+background-size: cover;
+background-position: center;
+background-attachment: fixed;
+background-repeat: no-repeat;
+}
+
+body::before {
+content: '';
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: linear-gradient(
+135deg,
+rgba(26, 15, 10, 0.92) 0%,
+rgba(26, 15, 10, 0.75) 50%,
+rgba(26, 15, 10, 0.88) 100%
+);
+z-index: 0;
+}
+
+.container {
+position: relative;
+z-index: 1;
+max-width: 1100px;
+margin: 0 auto;
+padding: 20px;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+
+header {
+text-align: center;
+padding: 40px 0 30px;
+}
+
+.brand-icon {
+font-size: 60px;
+margin-bottom: 15px;
+display: block;
+}
+
+h1 {
+font-family: 'Playfair Display', serif;
+font-size: 4rem;
+font-weight: 700;
+color: #f5d7a1;
+text-shadow: 0 2px 20px rgba(245, 215, 161, 0.3);
+letter-spacing: 2px;
+}
+
+.subtitle {
+font-size: 1.2rem;
+color: #d4a574;
+letter-spacing: 6px;
+text-transform: uppercase;
+margin-top: 10px;
+font-weight: 300;
+}
+
+.hero {
+text-align: center;
+padding: 40px 0;
+}
+
+.hero p {
+font-size: 1.15rem;
+line-height: 1.9;
+color: #e8d5c0;
+max-width: 650px;
+margin: 0 auto 20px;
+font-weight: 300;
+}
+
+.cta-button {
+display: inline-block;
+padding: 16px 45px;
+background: linear-gradient(135deg, #d4a574, #c4915a);
+color: #1a0f0a;
+text-decoration: none;
+border-radius: 50px;
+font-weight: 600;
+font-size: 1.15rem;
+transition: all 0.4s ease;
+border: none;
+cursor: pointer;
+box-shadow: 0 8px 30px rgba(212, 165, 116, 0.3);
+}
+
+.cta-button:hover {
+transform: translateY(-3px) scale(1.02);
+box-shadow: 0 12px 40px rgba(212, 165, 116, 0.5);
+background: linear-gradient(135deg, #e0b88a, #d4a574);
+}
+
+.features {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+gap: 25px;
+padding: 40px 0;
+}
+
+.feature-card {
+background: rgba(255, 255, 255, 0.06);
+backdrop-filter: blur(15px);
+-webkit-backdrop-filter: blur(15px);
+border-radius: 20px;
+padding: 30px;
+text-align: center;
+border: 1px solid rgba(245, 215, 161, 0.1);
+transition: all 0.4s ease;
+}
+
+.feature-card:hover {
+transform: translateY(-8px);
+background: rgba(255, 255, 255, 0.1);
+border-color: rgba(245, 215, 161, 0.3);
+box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.feature-card .icon {
+font-size: 40px;
+margin-bottom: 15px;
+display: block;
+}
+
+.feature-card h3 {
+font-family: 'Playfair Display', serif;
+color: #f5d7a1;
+font-size: 1.3rem;
+margin-bottom: 10px;
+}
+
+.feature-card p {
+color: #c4b5a8;
+font-size: 0.95rem;
+line-height: 1.6;
+font-weight: 300;
+}
+
+.phone-section {
+text-align: center;
+padding: 30px 0;
+}
+
+.phone-link {
+display: inline-flex;
+align-items: center;
+gap: 15px;
+padding: 18px 40px;
+background: rgba(255, 255, 255, 0.08);
+backdrop-filter: blur(15px);
+-webkit-backdrop-filter: blur(15px);
+border-radius: 50px;
+text-decoration: none;
+color: #f5d7a1;
+font-size: 1.5rem;
+font-weight: 600;
+border: 1px solid rgba(245, 215, 161, 0.2);
+transition: all 0.4s ease;
+}
+
+.phone-link:hover {
+background: rgba(245, 215, 161, 0.15);
+border-color: #f5d7a1;
+transform: scale(1.05);
+box-shadow: 0 0 40px rgba(245, 215, 161, 0.2);
+}
+
+.phone-link .icon {
+font-size: 28px;
+}
+
+.map-section {
+padding: 40px 0;
+}
+
+.map-section h2 {
+font-family: 'Playfair Display', serif;
+color: #f5d7a1;
+font-size: 2rem;
+text-align: center;
+margin-bottom: 25px;
+}
+
+.map-container {
+border-radius: 20px;
+overflow: hidden;
+border: 2px solid rgba(245, 215, 161, 0.15);
+box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.map-container iframe {
+width: 100%;
+height: 400px;
+display: block;
+border: none;
+}
+
+footer {
+text-align: center;
+padding: 30px 0;
+color: #8a7a6e;
+font-size: 0.85rem;
+font-weight: 300;
+}
+
+@media (max-width: 768px) {
+.container { padding: 15px; }
+h1 { font-size: 2.5rem; }
+.subtitle { font-size: 0.9rem; letter-spacing: 4px; }
+.hero p { font-size: 1rem; }
+.phone-link { font-size: 1.2rem; padding: 15px 25px; }
+.features { grid-template-columns: 1fr; }
+.map-container iframe { height: 300px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<header>
+<span class="brand-icon">🥖</span>
+<h1>Raximjon Nonvoyxonasi</h1>
+<p class="subtitle">Tabiiy &amp; Mazali</p>
+</header>
+
+<section class="hero">
+<p>
+Raximjon Nonvoyxonasida an'anaviy usulda, tabiiy masalliqlar bilan tayyorlangan
+eng mazali non mahsulotlarini topishingiz mumkin. Har kuni ertalab yangi pishirilgan
+nonlar sizni kutmoqda!
+</p>
+<a href="#phone" class="cta-button">Buyurtma berish</a>
+</section>
+
+<section class="features">
+<div class="feature-card">
+<span class="icon">🍞</span>
+<h3>An'anaviy Nonlar</h3>
+<p>O'zbek an'anaviy usulida tayyorlangan dimlama va tandir nonlari</p>
+</div>
+<div class="feature-card">
+<span class="icon">🥐</span>
+<h3>Buločka Mahsulotlari</h3>
+<p>Yumshoq va mazali buločka, shtrudel va boshqa qandolatchilik mahsulotlari</p>
+</div>
+<div class="feature-card">
+<span class="icon">⏰</span>
+<h3>Ertalabki Yetkazish</h3>
+<p>Har kuni 06:00 dan boshlab yangi nonlar tayyor. Tezkor yetkazib berish xizmati</p>
+</div>
+</section>
+
+<section class="phone-section" id="phone">
+<a href="tel:+998993921157" class="phone-link">
+<span class="icon">📞</span>
++998 99 392 11 57
+</a>
+<p style="color: #c4b5a8; margin-top: 15px; font-size: 0.9rem; font-weight: 300;">
+Telefon raqamga bosish orqali avtomatik qo'ng'iroq qilishingiz mumkin
+</p>
+</section>
+
+<section class="map-section">
+<h2>📍 Bizning Manzil</h2>
+<div class="map-container">
+<iframe
+src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6000!2d71.67257!3d40.9983!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38bb4f46ac0e7a8b%3A0x77b341a998c4a008!2sNonvoyxonA!5e0!3m2!1sen!2s!4v1"
+allowfullscreen=""
+loading="lazy"
+referrerpolicy="no-referrer-when-downgrade"
+title="Raximjon Nonvoyxonasi joylashuvi"
+></iframe>
+</div>
+</section>
+
+<footer>
+<p>&copy; 2026 Raximjon Nonvoyxonasi. Barcha huquqlar himoyalangan.</p>
+</footer>
+
+</div>
+
+</body>
+</html>
