@@ -1,33 +1,21 @@
-# Raximjon Nonvoyxonasi 🥖
+# Raximjon Nonvoyxonasi
 
-An'anaviy usulda, tabiiy masalliqlar bilan tayyorlangan non mahsulotlari uchun online sayt.
-
-## Texnologiyalar
-
-- HTML5 + CSS3 (3D transforms, perspective, glassmorphism)
-- JavaScript (scroll-based parallax, 3D card tilt)
-- Google Maps Embed API
-- GitHub Pages
+An'anaviy o'zbek nonlari va qandolatchilik mahsulotlari uchun zamonaviy online sayt.
 
 ## Xususiyatlar
 
-- 2 qatlamli 3D scroll parallax effekti
-- Orqa fon rasmi bilan chiroyli dizayn
-- 3D aylanuvchi kartalar (mouse hover)
+- Minimalistik va toza dizayn
+- Full screen hero section (rasm tepada)
+- Mahsulotlar katalogi
 - Google Maps jonli xarita
-- Telefon raqamga bosish orqali avtomatik qo'ng'iroq
-- Mobil qurilmalarga moslashgan (responsive)
-- Scroll progress bar
+- Click-to-call (telefon raqam)
+- Sticky phone button
+- Animatsiyalar (scroll-based fade-up)
+- Mobil uchun moslashgan
 
-## Ishga tushirish
+## Sayt
 
-Saytni GitHub Pages orqali ochish:
-
-```
-https://xolericuz.github.io/ZIYOKOR-NONLARI/
-```
-
-Lokalda ochish uchun `index.html` ni brauzerda oching.
+[https://xolericuz.github.io/ZIYOKOR-NONLARI/](https://xolericuz.github.io/ZIYOKOR-NONLARI/)
 
 ## Aloqa
 

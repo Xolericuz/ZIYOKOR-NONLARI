@@ -6,428 +6,661 @@
 <title>Raximjon Nonvoyxonasi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
+:root {
+--cream: #faf6f1;
+--warm: #f5ede4;
+--brown: #8b6b4a;
+--brown-dark: #5c4033;
+--gold: #c49a6c;
+--text: #2d2017;
+--text-light: #7a6a5e;
+--white: #ffffff;
+--shadow: 0 4px 30px rgba(0,0,0,0.06);
+--shadow-lg: 0 20px 60px rgba(0,0,0,0.08);
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+html { scroll-behavior: smooth; }
+
 body {
-font-family: 'Poppins', sans-serif;
-background: #1a0f0a;
-color: #fff;
+font-family: 'Inter', sans-serif;
+background: var(--cream);
+color: var(--text);
 overflow-x: hidden;
-perspective: 1200px;
+line-height: 1.6;
 }
 
-/* Layer 1: Background - slow parallax */
-.layer-back {
+/* NAV */
+nav {
 position: fixed;
-top: 0; left: 0;
-width: 100%; height: 100%;
-z-index: 0;
-transform-style: preserve-3d;
-will-change: transform;
+top: 0; left: 0; right: 0;
+z-index: 100;
+padding: 16px 40px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+transition: all 0.4s ease;
 }
 
-.layer-back img {
+nav.scrolled {
+background: rgba(250,246,241,0.92);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+box-shadow: 0 1px 30px rgba(0,0,0,0.06);
+}
+
+.nav-logo {
+font-family: 'Playfair Display', serif;
+font-size: 1.3rem;
+font-weight: 700;
+color: var(--brown-dark);
+text-decoration: none;
+}
+
+.nav-logo span { color: var(--gold); }
+
+.nav-links { display: flex; gap: 32px; align-items: center; }
+
+.nav-links a {
+text-decoration: none;
+color: var(--text-light);
+font-size: 0.85rem;
+font-weight: 500;
+letter-spacing: 0.5px;
+transition: color 0.3s;
+text-transform: uppercase;
+}
+
+.nav-links a:hover { color: var(--brown-dark); }
+
+.nav-phone {
+display: inline-flex;
+align-items: center;
+gap: 8px;
+padding: 8px 20px;
+background: var(--brown-dark);
+color: var(--white) !important;
+border-radius: 100px;
+font-size: 0.8rem !important;
+transition: all 0.3s !important;
+}
+
+.nav-phone:hover {
+background: var(--brown) !important;
+transform: scale(1.02);
+}
+
+/* HERO */
+.hero {
+position: relative;
+height: 100vh;
+min-height: 600px;
+display: flex;
+align-items: center;
+justify-content: center;
+overflow: hidden;
+}
+
+.hero-bg {
 position: absolute;
-bottom: 0; left: 50%;
-transform: translateX(-50%);
-width: 70%;
-max-width: 900px;
-height: auto;
-opacity: 0.35;
-object-fit: contain;
-object-position: bottom;
-pointer-events: none;
+inset: 0;
+width: 100%;
+height: 100%;
+object-fit: cover;
+object-position: center 30%;
 }
 
-.layer-back::after {
-content: '';
-position: fixed;
-top: 0; left: 0;
-width: 100%; height: 100%;
+.hero-overlay {
+position: absolute;
+inset: 0;
 background: linear-gradient(
 180deg,
-rgba(26,15,10,0.95) 0%,
-rgba(26,15,10,0.7) 30%,
-rgba(26,15,10,0.5) 60%,
-rgba(26,15,10,0.85) 100%
+rgba(45,32,23,0.15) 0%,
+rgba(45,32,23,0.5) 60%,
+rgba(45,32,23,0.85) 100%
 );
 }
 
-/* Layer 2: Content - front */
-.layer-front {
+.hero-content {
 position: relative;
-z-index: 1;
-transform-style: preserve-3d;
-}
-
-.scene-3d {
-transform-style: preserve-3d;
-will-change: transform;
-}
-
-.container {
-max-width: 1000px;
-margin: 0 auto;
-padding: 20px;
-}
-
-header {
+z-index: 2;
 text-align: center;
-padding: 60px 0 40px;
-transform-style: preserve-3d;
+padding: 20px;
+max-width: 720px;
 }
 
-.brand-icon {
-font-size: 70px;
-display: block;
-margin-bottom: 15px;
-filter: drop-shadow(0 0 30px rgba(245,215,161,0.3));
-animation: float 3s ease-in-out infinite;
+.hero-badge {
+display: inline-block;
+padding: 6px 20px;
+background: rgba(255,255,255,0.15);
+backdrop-filter: blur(10px);
+border-radius: 100px;
+color: var(--white);
+font-size: 0.75rem;
+font-weight: 500;
+letter-spacing: 2px;
+text-transform: uppercase;
+margin-bottom: 24px;
+border: 1px solid rgba(255,255,255,0.2);
 }
 
-@keyframes float {
-0%, 100% { transform: translateY(0); }
-50% { transform: translateY(-10px); }
-}
-
-h1 {
+.hero h1 {
 font-family: 'Playfair Display', serif;
 font-size: 4.5rem;
 font-weight: 700;
-background: linear-gradient(135deg, #f5d7a1, #e8b87a, #f5d7a1);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-background-clip: text;
-text-shadow: none;
-filter: drop-shadow(0 2px 30px rgba(245,215,161,0.2));
-letter-spacing: 2px;
-}
-
-.subtitle {
-font-size: 1.1rem;
-color: #d4a574;
-letter-spacing: 8px;
-text-transform: uppercase;
-margin-top: 12px;
-font-weight: 300;
-}
-
-.hero {
-text-align: center;
-padding: 50px 0;
-transform-style: preserve-3d;
+color: var(--white);
+line-height: 1.1;
+margin-bottom: 20px;
+letter-spacing: -1px;
 }
 
 .hero p {
 font-size: 1.1rem;
-line-height: 2;
-color: #e8d5c0;
-max-width: 600px;
-margin: 0 auto 25px;
+color: rgba(255,255,255,0.85);
 font-weight: 300;
+max-width: 500px;
+margin: 0 auto 32px;
+line-height: 1.8;
 }
 
-.cta-button {
+.hero-btn {
 display: inline-block;
-padding: 16px 50px;
-background: linear-gradient(135deg, #d4a574, #c4915a);
-color: #1a0f0a;
+padding: 14px 40px;
+background: var(--white);
+color: var(--brown-dark);
 text-decoration: none;
-border-radius: 50px;
+border-radius: 100px;
 font-weight: 600;
-font-size: 1.1rem;
+font-size: 0.9rem;
 transition: all 0.4s ease;
-box-shadow: 0 8px 30px rgba(212,165,116,0.3);
-transform-style: preserve-3d;
+box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
 
-.cta-button:hover {
-transform: translateY(-3px) scale(1.03);
-box-shadow: 0 15px 50px rgba(212,165,116,0.5);
+.hero-btn:hover {
+transform: translateY(-2px);
+box-shadow: 0 8px 30px rgba(0,0,0,0.15);
 }
 
-.card-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-gap: 30px;
-padding: 50px 0;
-perspective: 1000px;
+.scroll-indicator {
+position: absolute;
+bottom: 40px;
+left: 50%;
+transform: translateX(-50%);
+z-index: 2;
+width: 24px; height: 40px;
+border: 2px solid rgba(255,255,255,0.4);
+border-radius: 12px;
+display: flex;
+justify-content: center;
+padding-top: 8px;
 }
 
-.card-3d {
-background: rgba(255,255,255,0.05);
-backdrop-filter: blur(12px);
--webkit-backdrop-filter: blur(12px);
-border-radius: 24px;
-padding: 35px 25px;
-text-align: center;
-border: 1px solid rgba(245,215,161,0.08);
-transform-style: preserve-3d;
-transition: transform 0.1s ease-out;
-will-change: transform;
-cursor: default;
+.scroll-indicator::after {
+content: '';
+width: 3px; height: 10px;
+background: rgba(255,255,255,0.6);
+border-radius: 2px;
+animation: scrollDot 2s infinite;
 }
 
-.card-3d:hover {
-border-color: rgba(245,215,161,0.25);
+@keyframes scrollDot {
+0%, 100% { transform: translateY(0); opacity: 1; }
+50% { transform: translateY(8px); opacity: 0.3; }
 }
 
-.card-3d .icon {
-font-size: 48px;
-display: block;
-margin-bottom: 18px;
-transform: translateZ(30px);
+/* SECTIONS */
+section { padding: 100px 0; }
+
+.container {
+max-width: 1100px;
+margin: 0 auto;
+padding: 0 24px;
 }
 
-.card-3d h3 {
-font-family: 'Playfair Display', serif;
-color: #f5d7a1;
-font-size: 1.3rem;
+.section-label {
+display: inline-block;
+font-size: 0.7rem;
+font-weight: 600;
+letter-spacing: 3px;
+text-transform: uppercase;
+color: var(--gold);
 margin-bottom: 12px;
-transform: translateZ(20px);
 }
 
-.card-3d p {
-color: #c4b5a8;
-font-size: 0.92rem;
-line-height: 1.7;
-font-weight: 300;
-transform: translateZ(10px);
-}
-
-.phone-section {
-text-align: center;
-padding: 50px 0;
-transform-style: preserve-3d;
-}
-
-.phone-link {
-display: inline-flex;
-align-items: center;
-gap: 15px;
-padding: 18px 45px;
-background: rgba(255,255,255,0.06);
-backdrop-filter: blur(15px);
--webkit-backdrop-filter: blur(15px);
-border-radius: 50px;
-text-decoration: none;
-color: #f5d7a1;
-font-size: 1.6rem;
-font-weight: 600;
-border: 1px solid rgba(245,215,161,0.15);
-transition: all 0.4s ease;
-transform-style: preserve-3d;
-}
-
-.phone-link:hover {
-background: rgba(245,215,161,0.12);
-border-color: #f5d7a1;
-transform: scale(1.05);
-box-shadow: 0 0 50px rgba(245,215,161,0.2);
-}
-
-.phone-link .icon { font-size: 30px; }
-
-.phone-hint {
-color: #8a7a6e;
-margin-top: 15px;
-font-size: 0.85rem;
-font-weight: 300;
-}
-
-.map-section {
-padding: 50px 0;
-transform-style: preserve-3d;
-}
-
-.map-section h2 {
+.section-title {
 font-family: 'Playfair Display', serif;
-color: #f5d7a1;
-font-size: 2rem;
-text-align: center;
-margin-bottom: 25px;
+font-size: 2.5rem;
+font-weight: 700;
+color: var(--brown-dark);
+margin-bottom: 16px;
+line-height: 1.2;
 }
 
-.map-container {
-border-radius: 24px;
+.section-desc {
+color: var(--text-light);
+font-size: 1rem;
+max-width: 500px;
+line-height: 1.8;
+}
+
+/* ABOUT */
+.about {
+background: var(--white);
+}
+
+.about-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 80px;
+align-items: center;
+}
+
+.about-image {
+border-radius: 20px;
 overflow: hidden;
-border: 2px solid rgba(245,215,161,0.12);
-box-shadow: 0 15px 50px rgba(0,0,0,0.5);
-transform-style: preserve-3d;
+box-shadow: var(--shadow-lg);
 }
 
-.map-container iframe {
+.about-image img {
+width: 100%;
+height: 400px;
+object-fit: cover;
+display: block;
+}
+
+.about-text p {
+color: var(--text-light);
+line-height: 1.9;
+margin-bottom: 16px;
+font-size: 0.95rem;
+}
+
+/* PRODUCTS */
+.products-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 24px;
+margin-top: 50px;
+}
+
+.product-card {
+background: var(--white);
+border-radius: 16px;
+padding: 36px 28px;
+text-align: center;
+box-shadow: var(--shadow);
+transition: all 0.5s ease;
+border: 1px solid rgba(139,107,74,0.06);
+opacity: 0;
+transform: translateY(30px);
+}
+
+.product-card.visible {
+opacity: 1;
+transform: translateY(0);
+}
+
+.product-card:hover {
+transform: translateY(-6px);
+box-shadow: var(--shadow-lg);
+border-color: rgba(139,107,74,0.12);
+}
+
+.product-icon {
+font-size: 42px;
+display: block;
+margin-bottom: 20px;
+}
+
+.product-card h3 {
+font-family: 'Playfair Display', serif;
+font-size: 1.2rem;
+color: var(--brown-dark);
+margin-bottom: 10px;
+}
+
+.product-card p {
+color: var(--text-light);
+font-size: 0.88rem;
+line-height: 1.7;
+}
+
+/* CONTACT */
+.contact {
+background: var(--white);
+}
+
+.contact-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 60px;
+align-items: start;
+}
+
+.contact-info {
+padding: 40px;
+background: var(--cream);
+border-radius: 16px;
+}
+
+.contact-item {
+display: flex;
+align-items: center;
+gap: 16px;
+padding: 16px 0;
+border-bottom: 1px solid rgba(139,107,74,0.08);
+}
+
+.contact-item:last-child { border-bottom: none; }
+
+.contact-item-icon {
+width: 44px; height: 44px;
+background: var(--white);
+border-radius: 12px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 20px;
+box-shadow: var(--shadow);
+flex-shrink: 0;
+}
+
+.contact-item-text h4 {
+font-size: 0.75rem;
+font-weight: 600;
+text-transform: uppercase;
+letter-spacing: 1px;
+color: var(--text-light);
+margin-bottom: 4px;
+}
+
+.contact-item-text a,
+.contact-item-text p {
+color: var(--brown-dark);
+font-weight: 500;
+text-decoration: none;
+font-size: 1.05rem;
+}
+
+.contact-item-text a:hover { color: var(--gold); }
+
+.contact-map {
+border-radius: 16px;
+overflow: hidden;
+box-shadow: var(--shadow-lg);
+}
+
+.contact-map iframe {
 width: 100%;
 height: 380px;
 display: block;
 border: none;
 }
 
-footer {
-text-align: center;
-padding: 40px 0;
-color: #6a5a4e;
-font-size: 0.85rem;
-font-weight: 300;
-}
-
-/* Scroll progress bar */
-.scroll-progress {
+/* STICKY PHONE */
+.sticky-phone {
 position: fixed;
-top: 0; left: 0;
-height: 3px;
-background: linear-gradient(90deg, #d4a574, #f5d7a1);
-z-index: 1000;
-width: 0%;
-transition: width 0.1s linear;
+bottom: 32px;
+right: 32px;
+z-index: 99;
+width: 60px; height: 60px;
+background: var(--brown-dark);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+text-decoration: none;
+font-size: 26px;
+box-shadow: 0 6px 30px rgba(92,64,51,0.35);
+transition: all 0.4s ease;
+opacity: 0;
+transform: scale(0.8);
+pointer-events: none;
 }
 
-@media (max-width: 768px) {
-.layer-back img { width: 100%; }
-h1 { font-size: 2.8rem; }
-.subtitle { font-size: 0.85rem; letter-spacing: 5px; }
-.hero p { font-size: 0.95rem; }
-.phone-link { font-size: 1.2rem; padding: 14px 25px; }
-.card-grid { grid-template-columns: 1fr; }
-.map-container iframe { height: 280px; }
+.sticky-phone.show {
+opacity: 1;
+transform: scale(1);
+pointer-events: auto;
+}
+
+.sticky-phone:hover {
+transform: scale(1.1);
+box-shadow: 0 10px 40px rgba(92,64,51,0.45);
+}
+
+.sticky-phone .tooltip {
+position: absolute;
+right: 72px;
+background: var(--brown-dark);
+color: var(--white);
+padding: 8px 16px;
+border-radius: 8px;
+font-size: 0.8rem;
+white-space: nowrap;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.3s;
+}
+
+.sticky-phone:hover .tooltip { opacity: 1; }
+
+/* FOOTER */
+footer {
+padding: 40px 0;
+text-align: center;
+color: var(--text-light);
+font-size: 0.8rem;
+border-top: 1px solid rgba(139,107,74,0.08);
+}
+
+/* ANIMATIONS */
+.fade-up {
+opacity: 0;
+transform: translateY(40px);
+transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fade-up.visible {
+opacity: 1;
+transform: translateY(0);
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+.hero h1 { font-size: 3rem; }
+.hero p { font-size: 1rem; }
+.about-grid, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+.products-grid { grid-template-columns: 1fr 1fr; }
+nav { padding: 14px 20px; }
+.nav-links a:not(.nav-phone) { display: none; }
+}
+
+@media (max-width: 600px) {
+.hero h1 { font-size: 2.2rem; }
+.products-grid { grid-template-columns: 1fr; }
+section { padding: 60px 0; }
+.section-title { font-size: 1.8rem; }
+.sticky-phone { bottom: 20px; right: 20px; width: 52px; height: 52px; font-size: 22px; }
+.scroll-indicator { display: none; }
+.contact-info { padding: 24px; }
 }
 </style>
 </head>
 <body>
 
-<div class="scroll-progress" id="progressBar"></div>
-
-<div class="layer-back" id="layerBack">
-<img src="https://i.ibb.co/V0PPxDSF/file-0000000044e87246bcef229b937bebea.png" alt="">
+<nav id="navbar">
+<a href="#" class="nav-logo">Raximjon <span>Nonvoy</span></a>
+<div class="nav-links">
+<a href="#about">Biz haqimizda</a>
+<a href="#products">Mahsulotlar</a>
+<a href="#contact">Aloqa</a>
+<a href="tel:+998993921157" class="nav-phone">📞 +998 99 392 11 57</a>
 </div>
-
-<div class="layer-front" id="layerFront">
-
-<div class="scene-3d" id="scene3d">
-<div class="container">
-<header>
-<span class="brand-icon">🥖</span>
-<h1>Raximjon Nonvoyxonasi</h1>
-<p class="subtitle">Tabiiy &amp; Mazali</p>
-</header>
+</nav>
 
 <section class="hero">
-<p>
-An'anaviy usulda, tabiiy masalliqlar bilan tayyorlangan eng mazali non mahsulotlari.
-Har kuni ertalab yangi pishirilgan nonlar sizni kutmoqda!
-</p>
-<a href="#phone" class="cta-button">Buyurtma berish</a>
+<img class="hero-bg" src="https://i.ibb.co/V0PPxDSF/file-0000000044e87246bcef229b937bebea.png" alt="Non mahsulotlari">
+<div class="hero-overlay"></div>
+<div class="hero-content">
+<div class="hero-badge">Namangan — 2026</div>
+<h1>Raximjon<br>Nonvoyxonasi</h1>
+<p>An'anaviy usulda, tabiiy masalliqlar bilan tayyorlangan eng mazali non mahsulotlari</p>
+<a href="#products" class="hero-btn">Mahsulotlarni ko'rish</a>
+</div>
+<div class="scroll-indicator"></div>
 </section>
-</div>
-</div>
 
-<div class="scene-3d" id="sceneCards">
+<section class="about" id="about">
 <div class="container">
-<div class="card-grid" id="cardGrid">
-<div class="card-3d" data-index="0">
-<span class="icon">🍞</span>
-<h3>An'anaviy Nonlar</h3>
-<p>O'zbek an'anaviy usulida tayyorlangan dimlama va tandir nonlari</p>
+<div class="section-label">Biz haqimizda</div>
+<div class="about-grid">
+<div class="about-image fade-up">
+<img src="https://i.ibb.co/V0PPxDSF/file-0000000044e87246bcef229b937bebea.png" alt="Nonvoyxona">
 </div>
-<div class="card-3d" data-index="1">
-<span class="icon">🥐</span>
-<h3>Buločka Mahsulotlari</h3>
-<p>Yumshoq va mazali buločka, shtrudel va boshqa qandolatchilik mahsulotlari</p>
-</div>
-<div class="card-3d" data-index="2">
-<span class="icon">⏰</span>
-<h3>Ertalabki Yetkazish</h3>
-<p>Har kuni 06:00 dan boshlab yangi nonlar tayyor. Tezkor yetkazib berish</p>
+<div class="about-text fade-up">
+<h2 class="section-title">An'anaviy non<br>zamonaviy usulda</h2>
+<p>Raximjon Nonvoyxonasida har kuni ertalabdan boshlab eng sifatli un va tabiiy masalliqlardan foydalanib, an'anaviy o'zbek nonlarini tayyorlaymiz.</p>
+<p>Tandir noni, dimlama non, buločka va boshqa qandolatchilik mahsulotlarini eng yangi va mazali holatda sizga yetkazib beramiz.</p>
+<p>Bizning asosiy maqsadimiz — har bir mijozga yuqori sifatli va mazali non mahsulotlarini taqdim etish.</p>
 </div>
 </div>
 </div>
-</div>
-
-<div class="scene-3d" id="scenePhone">
-<div class="container">
-<section class="phone-section" id="phone">
-<a href="tel:+998993921157" class="phone-link">
-<span class="icon">📞</span>
-+998 99 392 11 57
-</a>
-<p class="phone-hint">Telefon raqamga bosish orqali avtomatik qo'ng'iroq</p>
 </section>
-</div>
-</div>
 
-<div class="scene-3d" id="sceneMap">
+<section id="products">
 <div class="container">
-<section class="map-section">
-<h2>Bizning Manzil</h2>
-<div class="map-container">
+<div class="section-label">Mahsulotlarimiz</div>
+<h2 class="section-title">Nimalar taklif qilamiz</h2>
+<p class="section-desc">Har kuni ertalab yangi pishirilgan, tabiiy masalliqlardan tayyorlangan mahsulotlar</p>
+<div class="products-grid">
+<div class="product-card" data-delay="0">
+<span class="product-icon">🍞</span>
+<h3>An'anaviy Non</h3>
+<p>Tandir va dimlama usulida tayyorlangan o'zbek an'anaviy nonlari</p>
+</div>
+<div class="product-card" data-delay="100">
+<span class="product-icon">🥐</span>
+<h3>Buločka</h3>
+<p>Yumshoq va mazali buločka mahsulotlari, shtrudellar</p>
+</div>
+<div class="product-card" data-delay="200">
+<span class="product-icon">🥖</span>
+<h3>Fransuz Noni</h3>
+<p>Yevropa usulida tayyorlangan baget va boshqa non turlari</p>
+</div>
+<div class="product-card" data-delay="300">
+<span class="product-icon">🥮</span>
+<h3>Qandolatchilik</h3>
+<p>Pirojniy, pechene va boshqa shirinlik mahsulotlari</p>
+</div>
+<div class="product-card" data-delay="400">
+<span class="product-icon">🧀</span>
+<h3>Nonushta To'plami</h3>
+<p>Non, moy, murabbo va choy bilan to'liq nonushta</p>
+</div>
+<div class="product-card" data-delay="500">
+<span class="product-icon">🚚</span>
+<h3>Yetkazib Berish</h3>
+<p>Shahar bo'ylab tezkor va bepul yetkazib berish xizmati</p>
+</div>
+</div>
+</div>
+</section>
+
+<section class="contact" id="contact">
+<div class="container">
+<div class="section-label">Aloqa</div>
+<h2 class="section-title">Biz bilan bog'laning</h2>
+<div class="contact-grid">
+<div class="contact-info fade-up">
+<div class="contact-item">
+<div class="contact-item-icon">📞</div>
+<div class="contact-item-text">
+<h4>Telefon</h4>
+<a href="tel:+998993921157">+998 99 392 11 57</a>
+</div>
+</div>
+<div class="contact-item">
+<div class="contact-item-icon">📍</div>
+<div class="contact-item-text">
+<h4>Manzil</h4>
+<p>Namangan, Uzbekistan</p>
+</div>
+</div>
+<div class="contact-item">
+<div class="contact-item-icon">🕐</div>
+<div class="contact-item-text">
+<h4>Ish vaqti</h4>
+<p>Dushanba — Yakshanba: 06:00 — 21:00</p>
+</div>
+</div>
+<div class="contact-item">
+<div class="contact-item-icon">💳</div>
+<div class="contact-item-text">
+<h4>To'lov</h4>
+<p>Naqd, Plastik karta, Click, Payme</p>
+</div>
+</div>
+</div>
+<div class="contact-map fade-up">
 <iframe
 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6000!2d71.67257!3d40.9983!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38bb4f46ac0e7a8b%3A0x77b341a998c4a008!2sNonvoyxonA!5e0!3m2!1sen!2s!4v1"
 allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
 title="Raximjon Nonvoyxonasi joylashuvi"></iframe>
 </div>
+</div>
+</div>
 </section>
-</div>
-</div>
 
-<div class="scene-3d">
-<div class="container">
 <footer>
-<p>&copy; 2026 Raximjon Nonvoyxonasi. Barcha huquqlar himoyalangan.</p>
+<div class="container">
+<p>© 2026 Raximjon Nonvoyxonasi. Barcha huquqlar himoyalangan.</p>
+</div>
 </footer>
-</div>
-</div>
 
-</div>
+<a href="tel:+998993921157" class="sticky-phone" id="stickyPhone">
+📞
+<span class="tooltip">Qo'ng'iroq qilish</span>
+</a>
 
 <script>
-const layerBack = document.getElementById('layerBack');
-const scene3d = document.getElementById('scene3d');
-const sceneCards = document.getElementById('sceneCards');
-const scenePhone = document.getElementById('scenePhone');
-const sceneMap = document.getElementById('sceneMap');
-const cards = document.querySelectorAll('.card-3d');
-const progressBar = document.getElementById('progressBar');
+// Navbar scroll effect
+const navbar = document.getElementById('navbar');
+const stickyPhone = document.getElementById('stickyPhone');
 
-function handleScroll() {
-const t = window.scrollY;
-const h = document.documentElement.scrollHeight - window.innerHeight;
-const p = h > 0 ? t / h : 0;
+window.addEventListener('scroll', () => {
+const scrollY = window.scrollY;
+navbar.classList.toggle('scrolled', scrollY > 60);
+stickyPhone.classList.toggle('show', scrollY > window.innerHeight * 0.5);
+}, { passive: true });
 
-progressBar.style.width = (p * 100) + '%';
-
-const rx = (t * 0.03);
-const ry = (t * 0.015);
-layerBack.style.transform =
-'translateY(' + (t * 0.08) + 'px) rotateX(' + (rx * 0.3) + 'deg) rotateY(' + (ry * 0.5) + 'deg)';
-
-scene3d.style.transform = 'rotateX(' + (rx * 0.6) + 'deg) rotateY(' + (ry * 0.4) + 'deg)';
-sceneCards.style.transform = 'rotateX(' + (rx * 0.4) + 'deg) rotateY(' + (ry * 0.3) + 'deg)';
-scenePhone.style.transform = 'rotateX(' + (rx * 0.2) + 'deg) rotateY(' + (ry * 0.2) + 'deg)';
-sceneMap.style.transform = 'rotateX(' + (rx * 0.1) + 'deg) rotateY(' + (ry * 0.1) + 'deg)';
+// Intersection Observer for fade-up
+const observer = new IntersectionObserver((entries) => {
+entries.forEach(entry => {
+if (entry.isIntersecting) {
+entry.target.classList.add('visible');
 }
-
-window.addEventListener('scroll', handleScroll, { passive: true });
-handleScroll();
-
-cards.forEach(card => {
-card.addEventListener('mousemove', function(e) {
-const r = this.getBoundingClientRect();
-const x = e.clientX - r.left;
-const y = e.clientY - r.top;
-const cx = r.width / 2;
-const cy = r.height / 2;
-const dx = (x - cx) / cx;
-const dy = (y - cy) / cy;
-this.style.transform =
-'perspective(1000px) rotateY(' + (dx * 12) + 'deg) rotateX(' + (-dy * 12) + 'deg) translateZ(10px)';
 });
+}, { threshold: 0.15 });
 
-card.addEventListener('mouseleave', function() {
-this.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg) translateZ(0px)';
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// Product cards staggered animation
+const cardObserver = new IntersectionObserver((entries) => {
+entries.forEach(entry => {
+if (entry.isIntersecting) {
+const delay = parseInt(entry.target.dataset.delay) || 0;
+setTimeout(() => entry.target.classList.add('visible'), delay);
+cardObserver.unobserve(entry.target);
+}
 });
-});
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.product-card').forEach(el => cardObserver.observe(el));
 </script>
 
 </body>
