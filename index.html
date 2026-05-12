@@ -947,7 +947,6 @@ scene.add(fillLight);
 function createBread() {
   const group = new THREE.Group();
 
-  // Main loaf body - rounded dome shape
   const bodyGeo = new THREE.SphereGeometry(1.6, 32, 32);
   bodyGeo.scale(1.2, 0.6, 0.9);
   const mat = new THREE.MeshPhysicalMaterial({
@@ -962,7 +961,6 @@ function createBread() {
   body.position.y = 0.5;
   group.add(body);
 
-  // Dome top
   const domeGeo = new THREE.SphereGeometry(1.5, 32, 32, 0, Math.PI * 2, 0, Math.PI / 2);
   const domeMat = new THREE.MeshPhysicalMaterial({
     color: 0xc49560,
@@ -975,7 +973,6 @@ function createBread() {
   dome.position.y = 0.9;
   group.add(dome);
 
-  // Sesame seeds
   const seedMat = new THREE.MeshPhysicalMaterial({
     color: 0xf5e6c8,
     roughness: 0.9,
@@ -1013,7 +1010,6 @@ function createBaguette() {
   baguette.position.x = -2.5;
   group.add(baguette);
 
-  // Slit marks
   const slitMat = new THREE.MeshPhysicalMaterial({ color: 0xb07a40, roughness: 0.9 });
   for (let i = 0; i < 4; i++) {
     const slit = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.02, 0.35), slitMat);
@@ -1054,7 +1050,6 @@ function createTable() {
   return table;
 }
 
-// Warm floating particles
 function createParticles() {
   const count = 200;
   const positions = new Float32Array(count * 3);
@@ -1107,7 +1102,6 @@ document.addEventListener('mousemove', (e) => {
   mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
 });
 
-// Heart particles
 const heartParticles = new THREE.BufferGeometry();
 const heartCount = 60;
 const heartPos = new Float32Array(heartCount * 3);
@@ -1148,7 +1142,6 @@ function animate() {
   croissant.rotation.y = Math.sin(time * 0.25 + 2) * 0.08;
   croissant.position.y = Math.sin(time * 0.45 + 0.5) * 0.03;
 
-  // Animate particles
   const pos = heartPoints.geometry.attributes.position.array;
   for (let i = 0; i < heartCount; i++) {
     pos[i * 3 + 1] += heartSpeeds[i];
@@ -1171,7 +1164,6 @@ function animate() {
 
 animate();
 
-// Resize
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
