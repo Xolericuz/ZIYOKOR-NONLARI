@@ -461,9 +461,9 @@ function removeProduct(id) {
 // ====== TABS ======
 function initTabs() {
   let tabs = [];
-  if (myRole === 'seller') tabs = ['📊 Dashboard', '🍞 Nonlarim', '📦 Buyurtmalar', '🗺 Xarita'];
-  else if (myRole === 'customer') tabs = ['🍞 Nonlar', '📍 Nonvoyxona', '📦 Buyurtmalar', '🗺 Xarita'];
-  else tabs = ['📦 Buyurtmalar', '🗺 Xarita', '📍 Mening joyim'];
+  if (myRole === 'seller') tabs = ['📊 Dashboard', '🍞 Nonlarim', '📦 Buyurtmalar', '🗺 Xarita', '⚙️'];
+  else if (myRole === 'customer') tabs = ['🍞 Nonlar', '📍 Nonvoyxona', '📦 Buyurtmalar', '🗺 Xarita', '⚙️'];
+  else tabs = ['📦 Buyurtmalar', '🗺 Xarita', '📍 Mening joyim', '⚙️'];
 
   const bar = document.getElementById('tabBar');
   bar.innerHTML = tabs.map((t,i) =>
@@ -487,15 +487,18 @@ function render() {
     else if (currentTab === 1) app.innerHTML = sellerProducts();
     else if (currentTab === 2) app.innerHTML = sellerOrders();
     else if (currentTab === 3) app.innerHTML = mapView('seller');
+    else if (currentTab === 4) app.innerHTML = settingsView();
   } else if (myRole === 'customer') {
     if (currentTab === 0) app.innerHTML = customerProducts();
     else if (currentTab === 1) app.innerHTML = customerBakeries();
     else if (currentTab === 2) app.innerHTML = customerOrders();
     else if (currentTab === 3) app.innerHTML = mapView('customer');
+    else if (currentTab === 4) app.innerHTML = settingsView();
   } else {
     if (currentTab === 0) app.innerHTML = deliveryOrders();
     else if (currentTab === 1) app.innerHTML = mapView('delivery');
     else if (currentTab === 2) app.innerHTML = deliveryMyLocation();
+    else if (currentTab === 3) app.innerHTML = settingsView();
   }
 
   // Ensure GPS bar exists
@@ -1006,6 +1009,95 @@ function deliveryMyLocation() {
       <div id="deliveryMiniMap" style="width:100%;height:250px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--glass-border)"></div>
     </div>
   `;
+}
+
+// ====== SETTINGS ======
+function settingsView() {
+  const appVersion = '3.0.0';
+  const roleLabels = { seller: '🏪 Nonvoy', customer: '🛒 Xaridor', delivery: '🚚 Yetkazib beruvchi' };
+  const totalPeers = Object.keys(liveLocations).filter(k => liveLocations[k].online).length + 1;
+  return `
+    <div class="section-title">⚙️ Sozlamalar</div>
+    <div class="section-sub">Ilova haqida va yangilanishlar</div>
+
+    <div class="card" style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span style="font-size:0.85rem;color:var(--text-bright);font-weight:600">📱 ZIYOKOR NONLARI</span>
+        <span class="status-badge status-accepted">v${appVersion}</span>
+      </div>
+      <div style="font-size:0.7rem;color:var(--text-dim);line-height:1.8">
+        <div>👤 Siz: <span style="color:var(--text-bright)">${myName}</span> · ${roleLabels[myRole] || myRole}</div>
+        <div>📞 ${myPhone}</div>
+        <div>📡 Peerlar: ${totalPeers} ta online</div>
+        ${myLat && myLng ? `<div>📍 GPS: ${myLat.toFixed(4)}, ${myLng.toFixed(4)}</div>` : '<div>📍 GPS: <span style="color:#ff6b6b">faol emas</span></div>'}
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:0.85rem;color:var(--text-bright);font-weight:600;margin-bottom:10px">📥 Yangilanishlar</div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:8px" onclick="checkUpdate()">
+        🔄 Yangilanishni tekshirish
+      </button>
+      <button class="btn btn-success" style="width:100%;justify-content:center" onclick="downloadUpdate()">
+        ⬇️ Yangi versiyani yuklash
+      </button>
+      <p style="font-size:0.6rem;color:var(--text-dim);margin-top:8px;text-align:center">
+        Oxirgi versiya GitHub dan avtomatik yuklanadi
+      </p>
+    </div>
+
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:0.85rem;color:var(--text-bright);font-weight:600;margin-bottom:10px">🗄 Tarmoq</div>
+      <div style="font-size:0.7rem;color:var(--text-dim);line-height:1.8">
+        <div>🔗 Relay: ${window.location.origin}/gun</div>
+        <div>🆔 Node ID: <span class="coords-text">${myNodeId}</span></div>
+        <div>📊 API: ${window.location.origin}/api/stats</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:0.85rem;color:var(--text-bright);font-weight:600;margin-bottom:10px">🔐 Maʼlumotlar</div>
+      <div style="font-size:0.7rem;color:var(--text-dim);line-height:1.8">
+        <div>🟢 Barcha ma'lumotlar P2P tarmoq orqali sinxronlanadi</div>
+        <div>💾 IndexedDB da mahalliy saqlanadi</div>
+        <div>🌐 Hech qanday markaziy server yo'q</div>
+        <div>📡 Relay peer faqat ma'lumotlarni saqlash uchun</div>
+      </div>
+      <button class="btn btn-ghost btn-sm" style="margin-top:10px;width:100%;justify-content:center" onclick="showToast('🗑 Ma\'lumotlar indekslangan...')">
+        🧹 Mahalliy keshni tozalash
+      </button>
+    </div>
+
+    <div style="text-align:center;padding:20px 0;font-size:0.6rem;color:var(--text-dim)">
+      <div>ZIYOKOR NONLARI v${appVersion}</div>
+      <div style="margin-top:4px">P2P · GPS · Decentralized</div>
+      <div style="margin-top:2px">⚡ Powered by Gun.js</div>
+    </div>
+  `;
+}
+
+function checkUpdate() {
+  showToast('🔄 Yangilanish tekshirilmoqda...');
+  fetch('./version.json?_=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      if (data.version && data.version > '3.0.0') {
+        showToast(`📥 Yangi versiya ${data.version} mavjud!`);
+      } else {
+        showToast('✅ Siz eng so\'nggi versiyadasiz');
+      }
+    })
+    .catch(() => showToast('⚠️ Yangilanishni tekshirib bo\'lmadi'));
+}
+
+function downloadUpdate() {
+  showToast('⬇️ Yuklanmoqda...');
+  const link = document.createElement('a');
+  link.href = 'https://github.com/Xolericuz/ZIYOKOR-NONLARI/releases/download/latest/ziyokor-nonlari.apk';
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
+  link.click();
+  showToast('📥 Yuklab olish boshlandi');
 }
 
 // ====== MAP VIEW ======
