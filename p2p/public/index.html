@@ -146,10 +146,6 @@ label{font-size:0.75rem;color:var(--text-dim);margin-bottom:4px;display:block}
   <div class="modal" id="modalContent"></div>
 </div>
 
-<div class="modal-overlay" id="confirmOverlay" style="z-index:3000">
-  <div class="modal" id="confirmContent" style="max-width:400px"></div>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script>
@@ -836,9 +832,9 @@ function placeOrder() {
     createdAt: Date.now(),
   };
 
-  // ---- SHOW CONFIRMATION OVERLAY (on top of cart) ----
-  const confirmContent = document.getElementById('confirmContent');
-  confirmContent.innerHTML = `
+  // ---- SHOW CONFIRMATION INSIDE CART MODAL ----
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML = `
     <h2 style="font-size:1.1rem;color:var(--text-bright);margin-bottom:14px">✅ Buyurtmani tasdiqlang</h2>
     <div style="font-size:0.8rem;color:var(--text-dim);margin-bottom:12px">
       <div style="margin-bottom:8px">
@@ -860,30 +856,29 @@ function placeOrder() {
       </div>
     </div>
     <div style="display:flex;gap:10px">
-      <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="closeConfirm()">❌ Bekor qilish</button>
-      <button class="btn btn-success" style="flex:1;justify-content:center" onclick="confirmOrder('${orderId}')">✅ Tasdiqlash</button>
+      <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="showCart()">❌ Bekor qilish</button>
+      <button class="btn btn-success" style="flex:1;justify-content:center" onclick="confirmOrder()">✅ Tasdiqlash</button>
     </div>
   `;
-  document.getElementById('confirmOverlay').classList.add('active');
 
-  // Store order data temporarily
   window._pendingOrder = order;
   window._pendingItems = items;
+  window._pendingOrderId = orderId;
 }
 
-function confirmOrder(orderId) {
+function confirmOrder() {
   const order = window._pendingOrder;
-  const orderIdFinal = orderId || window._pendingOrderId;
+  const orderId = window._pendingOrderId;
   if (!order) return;
 
-  gun.get('orders').get(orderIdFinal).put(order);
+  gun.get('orders').get(orderId).put(order);
 
   if (order.bakeryId) {
-    gun.get('bakeries').get(order.bakeryId).get('orders').get(orderIdFinal).put(order);
+    gun.get('bakeries').get(order.bakeryId).get('orders').get(orderId).put(order);
   }
 
-  myOrders[orderIdFinal] = { ...order, id: orderIdFinal };
-  orders[orderIdFinal] = { ...order, id: orderIdFinal };
+  myOrders[orderId] = { ...order, id: orderId };
+  orders[orderId] = { ...order, id: orderId };
 
   cart = {};
   selectedBakeryId = null;
@@ -891,20 +886,17 @@ function confirmOrder(orderId) {
   document.getElementById('cartFab')?.remove();
 
   if (myRole === 'seller') {
-    orders[orderIdFinal] = { ...order, id: orderIdFinal };
-    myOrders[orderIdFinal] = { ...order, id: orderIdFinal };
+    orders[orderId] = { ...order, id: orderId };
+    myOrders[orderId] = { ...order, id: orderId };
   }
 
-  // Close both overlays
-  closeConfirm();
-
-  // Show success screen
-  const successContent = document.getElementById('modalContent');
-  successContent.innerHTML = `
+  // Show success in same modal
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML = `
     <div style="text-align:center;padding:20px 0">
       <div style="font-size:3rem;margin-bottom:12px">✅</div>
       <h2 style="font-size:1.2rem;color:var(--text-bright);margin-bottom:6px">Buyurtma yuborildi!</h2>
-      <p style="font-size:0.8rem;color:var(--text-dim);margin-bottom:4px">#${orderIdFinal.slice(-8)}</p>
+      <p style="font-size:0.8rem;color:var(--text-dim);margin-bottom:4px">#${orderId.slice(-8)}</p>
       <p style="font-size:0.7rem;color:var(--green);margin-bottom:20px">📍 ${order.address}</p>
       <div style="display:flex;gap:10px;flex-direction:column">
         <button class="btn btn-primary" style="justify-content:center" onclick="closeModal(); switchTab(2); render()">📦 Buyurtmalarim</button>
@@ -912,14 +904,10 @@ function confirmOrder(orderId) {
       </div>
     </div>
   `;
-  document.getElementById('modalOverlay').classList.add('active');
 
   window._pendingOrder = null;
   window._pendingItems = null;
-}
-
-function closeConfirm() {
-  document.getElementById('confirmOverlay').classList.remove('active');
+  window._pendingOrderId = null;
 }
 
 // ====== DELIVERY VIEWS ======
@@ -1275,10 +1263,6 @@ function closeModal() {
 
 document.getElementById('modalOverlay').addEventListener('click', e => {
   if (e.target === e.currentTarget) closeModal();
-});
-
-document.getElementById('confirmOverlay').addEventListener('click', e => {
-  if (e.target === e.currentTarget) closeConfirm();
 });
 
 // ====== INIT ======
