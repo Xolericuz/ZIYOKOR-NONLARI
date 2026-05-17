@@ -10,7 +10,7 @@
     "start": "node peer-relay.js"
   },
   "dependencies": {
-    "gun": "^0.9.999",
+    "gun": "^0.2019.416",
     "ws": "^8.16.0"
   },
   "devDependencies": {
