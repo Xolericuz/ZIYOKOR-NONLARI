@@ -1,20 +1,15 @@
 {
   "name": "ziyokor-p2p",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "P2P decentralized marketplace — Zero server, peer-to-peer bread marketplace",
+  "description": "ZIYOKOR NONLARI — P2P marketplace with persistent Gun.js peer",
   "scripts": {
-    "dev": "concurrently \"npm run relay\" \"npm run serve\"",
-    "relay": "node peer-relay.js",
-    "serve": "npx serve . -p 3000 -s",
-    "start": "node peer-relay.js"
+    "start": "node server.js",
+    "dev": "node server.js"
   },
   "dependencies": {
+    "express": "^4.18.2",
     "gun": "^0.9.999",
     "ws": "^8.16.0"
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.2",
-    "serve": "^14.2.1"
   }
 }

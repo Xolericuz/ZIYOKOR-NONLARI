@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ZIYOKOR NONLARI — P2P Marketplace</title>
+<script src="/gun/gun.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --glass:rgba(255,255,255,0.05);
+  --glass-border:rgba(255,255,255,0.08);
+  --glass-hover:rgba(255,255,255,0.1);
+  --text:#f0ece6;
+  --text-dim:rgba(240,236,230,0.5);
+  --text-bright:#fff;
+  --gold:#d4a574;
+  --gold-dim:rgba(212,165,116,0.3);
+  --accent:#e86a3a;
+  --green:#4caf50;
+  --blue:#42a5f5;
+  --bg:#0a0806;
+  --card:rgba(255,255,255,0.04);
+  --radius:16px;
+  --transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.5;min-height:100dvh;padding-bottom:100px}
+
+.btn{padding:10px 22px;border-radius:100px;border:none;font-size:0.8rem;font-weight:600;cursor:pointer;transition:var(--transition);font-family:inherit;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:linear-gradient(135deg,#b8854a,var(--gold));color:#fff}
+.btn-primary:hover{opacity:0.9}
+.btn-ghost{background:var(--glass);border:1px solid var(--glass-border);color:var(--text-dim)}
+.btn-ghost:hover{color:var(--text);border-color:var(--gold)}
+.btn-success{background:var(--green);color:#fff}
+.btn-danger{background:rgba(255,107,107,0.15);color:#ff6b6b;border:1px solid rgba(255,107,107,0.3)}
+.btn-sm{padding:6px 14px;font-size:0.7rem}
+
+.card{background:var(--card);border:1px solid var(--glass-border);border-radius:var(--radius);padding:16px}
+input,select,textarea{background:var(--glass);border:1px solid var(--glass-border);border-radius:10px;color:var(--text);padding:10px 14px;font-size:0.85rem;outline:none;width:100%;font-family:inherit;transition:var(--transition)}
+input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+select option{background:#0a0806}
+label{font-size:0.75rem;color:var(--text-dim);margin-bottom:4px;display:block}
+
+.nav{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(10,8,6,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);position:sticky;top:0;z-index:100}
+.nav-logo{font-size:0.95rem;font-weight:700;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+.nav-logo span{color:var(--gold)}
+.nav-info{display:flex;align-items:center;gap:10px;font-size:0.7rem;color:var(--text-dim)}
+
+.tab-bar{display:flex;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--glass-border);position:sticky;top:48px;z-index:99;overflow-x:auto}
+.tab-btn{padding:10px 18px;font-size:0.72rem;font-weight:500;color:var(--text-dim);background:none;border:none;cursor:pointer;white-space:nowrap;font-family:inherit;border-bottom:2px solid transparent;transition:var(--transition)}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+.content{padding:16px;max-width:1000px;margin:0 auto}
+.section-title{font-size:1.15rem;font-weight:700;color:var(--text-bright);margin-bottom:4px}
+.section-sub{color:var(--text-dim);font-size:0.75rem;margin-bottom:16px}
+
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-dim)}
+.empty-state .icon{font-size:3.5rem;display:block;margin-bottom:12px;opacity:0.35}
+.empty-state p{font-size:0.85rem;margin-bottom:6px}
+.empty-state .hint{font-size:0.68rem;opacity:0.6}
+
+.grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.prod-img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:#100a04}
+.prod-name{font-size:0.82rem;font-weight:600;color:var(--text-bright);margin-top:6px}
+.prod-price{font-size:0.9rem;font-weight:700;color:var(--gold)}
+.prod-price sub{font-size:0.55rem;color:var(--text-dim);font-weight:400}
+
+.bakery-item{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.bakery-icon{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#1a1006,#2a1a0a);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.bakery-info{flex:1}
+.bakery-name{font-size:0.85rem;font-weight:600;color:var(--text-bright)}
+.bakery-detail{font-size:0.68rem;color:var(--text-dim);margin-top:2px}
+
+.status-badge{font-size:0.6rem;padding:3px 10px;border-radius:100px;font-weight:600}
+.status-pending{background:rgba(255,193,7,0.15);color:#ffc107}
+.status-accepted{background:rgba(66,165,245,0.15);color:var(--blue)}
+.status-baking{background:rgba(212,165,116,0.15);color:var(--gold)}
+.status-ready{background:rgba(76,175,80,0.15);color:var(--green)}
+.status-delivering{background:rgba(76,175,80,0.2);color:#66bb6a}
+.status-delivered{background:rgba(76,175,80,0.25);color:#81c784}
+
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s}
+.modal-overlay.active{opacity:1;pointer-events:all}
+.modal{background:rgba(16,12,8,0.97);border:1px solid var(--glass-border);border-radius:20px;max-width:460px;width:90vw;padding:24px;max-height:85vh;overflow-y:auto;transform:scale(0.92);transition:transform 0.3s cubic-bezier(0.16,1,0.3,1)}
+.modal-overlay.active .modal{transform:scale(1)}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(16,12,8,0.95);border:1px solid var(--glass-border);backdrop-filter:blur(20px);color:var(--text);border-radius:100px;padding:10px 22px;font-size:0.78rem;z-index:999;box-shadow:0 8px 30px rgba(0,0,0,0.4);display:none;white-space:nowrap}
+.toast.show{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-logo">ZIYOKOR <span>NONLARI</span></div>
+  <div class="nav-info">
+    <span id="statusDot" style="width:6px;height:6px;border-radius:50%;background:#666"></span>
+    <span id="peerStatus">connecting...</span>
+  </div>
+</div>
+
+<div class="tab-bar" id="tabBar"></div>
+
+<div class="content" id="app"></div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// ZIYOKOR NONLARI — P2P Decentralized Marketplace
+// No fake data. Only real Gun.js peer-to-peer state.
+// ============================================================
+
+const GUN_RELAY = window.location.origin + '/gun';
+
+// ====== GUN.JS ======
+const gun = Gun({ peers: [GUN_RELAY], localStorage: true, radisk: true });
+
+// ====== STATE ======
+let peerCount = 0;
+let myNodeId = 'user_' + Date.now().toString(36) + Math.random().toString(36).slice(2,5);
+let myRole = null;
+let myName = '';
+let myBakeryName = '';
+let myPhone = '';
+let myProducts = [];
+let currentTab = 0;
+let cart = {};
+let selectedBakeryId = null;
+
+// Live P2P data stores
+let bakeries = {};  // key: peerId, value: bakery data
+let orders = {};    // key: orderId, value: order data
+let myOrders = {};  // orders I placed/received
+
+// ====== PEER TRACKING ======
+gun.on('hi', peer => {
+  peerCount = Object.keys(Gun.peers || {}).length + 1;
+  updatePeerUI();
+});
+gun.on('bye', peer => {
+  peerCount = Object.keys(Gun.peers || {}).length;
+  updatePeerUI();
+});
+
+function updatePeerUI() {
+  const dot = document.getElementById('statusDot');
+  const status = document.getElementById('peerStatus');
+  const online = peerCount > 0;
+  dot.style.background = online ? '#4caf50' : '#666';
+  if (online) dot.style.boxShadow = '0 0 6px rgba(76,175,80,0.5)';
+  else dot.style.boxShadow = 'none';
+  status.textContent = online ? `${peerCount} peer(s) online` : 'offline (no peers)';
+  if (!online) status.style.color = 'var(--text-dim)';
+  else status.style.color = '#4caf50';
+}
+
+// ====== LOGIN ======
+function showLogin() {
+  const html = `
+    <div style="max-width:400px;margin:40px auto;text-align:center">
+      <h1 style="font-size:1.6rem;font-weight:800;color:var(--text-bright);margin-bottom:4px">ZIYOKOR <span style="color:var(--gold)">NONLARI</span></h1>
+      <p style="color:var(--text-dim);font-size:0.8rem;margin-bottom:20px">Peer-to-peer · Decentralized · Zero fake data</p>
+      <div class="card" style="text-align:left">
+        <div style="margin-bottom:12px">
+          <label>Rol</label>
+          <select id="loginRole">
+            <option value="seller">🏪 Nonvoy (sotuvchi)</option>
+            <option value="customer">🛒 Xaridor</option>
+          </select>
+        </div>
+        <div style="margin-bottom:12px">
+          <label>Ismingiz *</label>
+          <input id="loginName" placeholder="Ismingiz" required>
+        </div>
+        <div style="margin-bottom:12px">
+          <label>Telefon *</label>
+          <input id="loginPhone" placeholder="+998 XX XXX XX XX" required>
+        </div>
+        <div style="margin-bottom:16px" id="bakeryField">
+          <label>Nonvoyxona nomi *</label>
+          <input id="loginBakery" placeholder="Nonvoyxona nomi">
+        </div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="login()">Tarmoqqa ulanish →</button>
+      </div>
+      <p style="color:var(--text-dim);font-size:0.6rem;margin-top:14px">🌐 Ma'lumotlar Gun.js P2P tarmoq orqali sinxronlanadi</p>
+    </div>
+  `;
+  document.getElementById('app').innerHTML = html;
+
+  // Toggle bakery field based on role
+  document.getElementById('loginRole').addEventListener('change', e => {
+    document.getElementById('bakeryField').style.display = e.target.value === 'seller' ? 'block' : 'none';
+  });
+  document.getElementById('bakeryField').style.display = 'block';
+}
+
+function login() {
+  const role = document.getElementById('loginRole').value;
+  const name = document.getElementById('loginName').value.trim();
+  const phone = document.getElementById('loginPhone').value.trim();
+  const bakeryName = document.getElementById('loginBakery')?.value?.trim() || '';
+
+  if (!name || !phone) { showToast('⚠️ Ism va telefon majburiy'); return; }
+  if (role === 'seller' && !bakeryName) { showToast('⚠️ Nonvoyxona nomini kiriting'); return; }
+
+  myRole = role;
+  myName = name;
+  myPhone = phone;
+  myBakeryName = bakeryName;
+
+  if (role === 'seller') {
+    initSeller();
+  } else {
+    initCustomer();
+  }
+
+  initTabs();
+  render();
+}
+
+// ====== SELLER: PUBLISH TO P2P NETWORK ======
+function initSeller() {
+  const nodeId = myNodeId;
+
+  // Publish bakery to Gun graph
+  gun.get('bakeries').get(nodeId).put({
+    id: nodeId,
+    name: myBakeryName,
+    owner: myName,
+    phone: myPhone,
+    status: 'open',
+    joinedAt: Date.now(),
+    online: true,
+  });
+
+  // Publish GPS
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(pos => {
+      gun.get('bakeries').get(nodeId).get('location').put({
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+      });
+    }, () => {}, { enableHighAccuracy: true, timeout: 10000 });
+  }
+
+  // Subscribe to orders addressed to me
+  gun.get('orders').map().on((order, orderId) => {
+    if (order && order.bakeryId === nodeId) {
+      orders[orderId] = { ...order, id: orderId };
+      myOrders[orderId] = { ...order, id: orderId };
+      render();
+      showToast(`🆕 #${orderId.slice(-5)} yangi buyurtma`);
+    }
+  });
+
+  showToast(`🏪 ${myBakeryName} P2P tarmoqqa qo'shildi`);
+}
+
+// ====== CUSTOMER: DISCOVER BAKERIES ======
+function initCustomer() {
+  // Subscribe to all bakeries in P2P network
+  gun.get('bakeries').map().on((bakery, id) => {
+    if (bakery && bakery.name) {
+      bakeries[id] = { ...bakery, id };
+      // Also get location
+      gun.get('bakeries').get(id).get('location').once(loc => {
+        if (loc) bakeries[id].location = loc;
+        render();
+      });
+      render();
+    }
+  });
+
+  // Subscribe to my orders
+  gun.get('orders').map().on((order, orderId) => {
+    if (order && order.customerId === myNodeId) {
+      orders[orderId] = { ...order, id: orderId };
+      myOrders[orderId] = { ...order, id: orderId };
+      render();
+    }
+  });
+}
+
+// ====== PRODUCTS ======
+function addProduct() {
+  const name = prompt('Non nomi:');
+  if (!name) return;
+  const price = parseInt(prompt('Narxi (so\'m):'));
+  if (isNaN(price) || price < 500) { showToast('⚠️ Narx noto\'g\'ri'); return; }
+
+  myProducts.push({ id: Date.now(), name, price, desc: '' });
+  gun.get('bakeries').get(myNodeId).get('products').put(myProducts);
+  render();
+  showToast(`✅ ${name} qo'shildi`);
+}
+
+function removeProduct(id) {
+  myProducts = myProducts.filter(p => p.id !== id);
+  gun.get('bakeries').get(myNodeId).get('products').put(myProducts);
+  render();
+}
+
+// ====== TABS ======
+function initTabs() {
+  const tabs = myRole === 'seller'
+    ? ['📊 Dashboard', '🍞 Nonlarim', '📦 Buyurtmalar']
+    : ['🍞 Nonlar', '📍 Nonvoyxona', '📦 Buyurtmalar'];
+
+  const bar = document.getElementById('tabBar');
+  bar.innerHTML = tabs.map((t,i) =>
+    `<button class="tab-btn ${i===0?'active':''}" onclick="switchTab(${i})">${t}</button>`
+  ).join('');
+}
+
+function switchTab(idx) {
+  currentTab = idx;
+  document.querySelectorAll('.tab-btn').forEach((t,i) => t.classList.toggle('active', i === idx));
+  render();
+}
+
+// ====== RENDER ======
+function render() {
+  if (!myRole) return showLogin();
+  const app = document.getElementById('app');
+
+  if (myRole === 'seller') {
+    if (currentTab === 0) app.innerHTML = sellerDashboard();
+    else if (currentTab === 1) app.innerHTML = sellerProducts();
+    else if (currentTab === 2) app.innerHTML = sellerOrders();
+  } else {
+    if (currentTab === 0) app.innerHTML = customerProducts();
+    else if (currentTab === 1) app.innerHTML = customerBakeries();
+    else if (currentTab === 2) app.innerHTML = customerOrders();
+  }
+}
+
+// ====== SELLER VIEWS ======
+function sellerDashboard() {
+  const activeOrders = Object.values(myOrders).filter(o => o.status !== 'delivered' && o.status !== 'rejected');
+  const revenue = Object.values(myOrders).reduce((s,o) => s + (o.total || 0), 0);
+  const totalOrders = Object.keys(myOrders).length;
+
+  return `
+    <div class="section-title">📊 ${myBakeryName}</div>
+    <div class="section-sub">P2P networkda ${Object.keys(bakeries).length + 1} ta nonvoy</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;margin-bottom:16px">
+      <div class="card" style="text-align:center;padding:14px">
+        <div style="font-size:1.3rem;font-weight:700;color:var(--gold)">${totalOrders}</div>
+        <div style="font-size:0.63rem;color:var(--text-dim)">Jami buyurtma</div>
+      </div>
+      <div class="card" style="text-align:center;padding:14px">
+        <div style="font-size:1.3rem;font-weight:700;color:var(--gold)">${revenue.toLocaleString()}</div>
+        <div style="font-size:0.63rem;color:var(--text-dim)">Daromad (so'm)</div>
+      </div>
+      <div class="card" style="text-align:center;padding:14px">
+        <div style="font-size:1.3rem;font-weight:700;color:var(--gold)">${activeOrders.length}</div>
+        <div style="font-size:0.63rem;color:var(--text-dim)">Faol buyurtma</div>
+      </div>
+      <div class="card" style="text-align:center;padding:14px">
+        <div style="font-size:1.3rem;font-weight:700;color:var(--gold)">${peerCount || '?'}</div>
+        <div style="font-size:0.63rem;color:var(--text-dim)">Peerlar</div>
+      </div>
+    </div>
+    <div style="font-size:0.82rem;color:var(--text-bright);margin-bottom:10px">🟢 Jonli buyurtmalar</div>
+    ${activeOrders.length === 0
+      ? emptyState('⏳', 'Hali buyurtma yo\'q', 'Xaridorlar buyurtma berganda shu yerda ko\'rinadi')
+      : activeOrders.map(o => orderCard(o, true)).join('')}
+  `;
+}
+
+function sellerProducts() {
+  return `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div>
+        <div class="section-title">🍞 Nonlarim</div>
+        <div class="section-sub">${myProducts.length} ta non</div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="addProduct()">+ Non qo'shish</button>
+    </div>
+    ${myProducts.length === 0
+      ? emptyState('🍞', 'Non qo\'shilmagan', '"Non qo\'shish" tugmasini bosing')
+      : `<div class="grid-3">${myProducts.map(p => `
+        <div class="card" style="padding:12px;position:relative">
+          <button onclick="removeProduct(${p.id})" style="position:absolute;top:6px;right:6px;background:none;border:none;color:#ff6b6b;font-size:0.9rem;cursor:pointer">✕</button>
+          <div style="width:100%;aspect-ratio:1;border-radius:8px;background:linear-gradient(135deg,#1a1006,#2a1a0a);display:flex;align-items:center;justify-content:center;font-size:2.5rem">🍞</div>
+          <div class="prod-name">${p.name}</div>
+          <div class="prod-price">${p.price.toLocaleString()} <sub>so'm</sub></div>
+        </div>
+      `).join('')}</div>`
+    }
+    <p style="color:var(--text-dim);font-size:0.65rem;margin-top:12px;text-align:center">Mahsulotlar Gun.js P2P tarmoq orqali barcha peerlarga tarqaladi</p>
+  `;
+}
+
+function sellerOrders() {
+  const allOrders = Object.values(myOrders);
+  return `
+    <div class="section-title">📦 Barcha buyurtmalar</div>
+    <div class="section-sub">${allOrders.length} ta buyurtma</div>
+    ${allOrders.length === 0
+      ? emptyState('📦', 'Buyurtmalar yo\'q', 'Yangi buyurtma kelganda shu yerda ko\'rinadi')
+      : allOrders.reverse().map(o => orderCard(o, false)).join('')}
+  `;
+}
+
+function orderCard(o, showActions) {
+  const actionsHtml = {
+    pending: `<button class="btn btn-success btn-sm" onclick="updateOrder('${o.id}','accepted')">✅ Qabul qilish</button>
+              <button class="btn btn-danger btn-sm" onclick="updateOrder('${o.id}','rejected')">❌ Rad etish</button>`,
+    accepted: `<button class="btn btn-primary btn-sm" onclick="updateOrder('${o.id}','baking')">🔥 Tayyorlanmoqda</button>`,
+    baking: `<button class="btn btn-primary btn-sm" onclick="updateOrder('${o.id}','ready')">✅ Tayyor</button>`,
+    ready: `<span style="font-size:0.7rem;color:var(--gold)">⏳ Xaridor kelishini kuting</span>`,
+    delivering: `<span style="font-size:0.7rem;color:var(--green)">🟢 Yetkazilmoqda</span>`,
+    delivered: `<span style="font-size:0.7rem;color:var(--green)">✅ Yetkazildi</span>`,
+    rejected: `<span style="font-size:0.7rem;color:#ff6b6b">❌ Bekor qilindi</span>`,
+  };
+
+  const items = (o.items || []).map(i => `${i.name || i.productName} x${i.qty || i.quantity}`).join(', ');
+  return `<div class="card" style="margin-bottom:10px;border-color:${o.status==='pending'?'var(--gold)':'var(--glass-border)'}">
+    <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+      <span style="font-size:0.65rem;color:var(--text-dim)">#${o.id.slice(-5)} · ${o.customerName || o.customerId?.slice(0,8) || 'Xaridor'}</span>
+      <span class="status-badge status-${o.status}">${o.status}</span>
+    </div>
+    <div style="font-size:0.8rem;color:var(--text);margin-bottom:4px">${items || '—'}</div>
+    <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:4px">${(o.total||0).toLocaleString()} so'm</div>
+    <div style="font-size:0.65rem;color:var(--text-dim);margin-bottom:8px">📍 ${o.address || 'Manzil kiritilmagan'} · 📞 ${o.customerPhone || '—'}</div>
+    ${showActions && actionsHtml[o.status] ? `<div style="display:flex;gap:6px">${actionsHtml[o.status]}</div>` : ''}
+  </div>`;
+}
+
+function updateOrder(orderId, status) {
+  const order = orders[orderId] || myOrders[orderId];
+  if (!order) return;
+  order.status = status;
+
+  // Update in P2P graph
+  gun.get('orders').get(orderId).get('status').put(status);
+
+  render();
+  const msgs = {
+    accepted: '✅ Buyurtma qabul qilindi',
+    rejected: '❌ Buyurtma rad etildi',
+    baking: '🟠 Tayyorlanmoqda',
+    ready: '✅ Tayyor',
+  };
+  showToast(msgs[status] || status);
+}
+
+// ====== CUSTOMER VIEWS ======
+function customerProducts() {
+  const bakeryIds = Object.keys(bakeries);
+
+  if (bakeryIds.length === 0) {
+    return emptyState('🔍', 'Tarmoqda nonvoy topilmadi', 'P2P tarmoqqa ulangan nonvoy bo\'lishi kerak', '📡 Relay peer ulanishini tekshiring');
+  }
+
+  return `
+    <div class="section-title">🍞 Nonlar</div>
+    <div class="section-sub">P2P tarmoqdagi ${bakeryIds.length} ta nonvoy</div>
+    ${bakeryIds.map(bId => {
+      const b = bakeries[bId];
+      const prods = b.products || [];
+      if (!prods.length) return '';
+      return `
+        <div class="card" style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div>
+              <div style="font-size:0.9rem;font-weight:600;color:var(--text-bright)">🏪 ${b.name}</div>
+              <div style="font-size:0.65rem;color:var(--text-dim)">${b.owner} · 📞 ${b.phone || '—'}</div>
+            </div>
+            <span style="font-size:0.6rem;padding:3px 8px;border-radius:100px;background:rgba(76,175,80,0.15);color:var(--green);font-weight:600">🟢 P2P</span>
+          </div>
+          <div class="grid-3">
+            ${prods.map(p => `
+              <div style="cursor:pointer" onclick="addToCart('${bId}','${b.name}',${p.id},'${p.name}',${p.price})">
+                <div style="width:100%;aspect-ratio:1;border-radius:8px;background:linear-gradient(135deg,#1a1006,#2a1a0a);display:flex;align-items:center;justify-content:center;font-size:2rem">🍞</div>
+                <div class="prod-name">${p.name}</div>
+                <div class="prod-price">${p.price.toLocaleString()} <sub>so'm</sub></div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }).filter(Boolean).join('') || emptyState('🍞', 'Nonvoylar mahsulot qo\'shmagan', 'Nonvoylar o\'z mahsulotlarini qo\'shishlari kerak')}
+  `;
+}
+
+function customerBakeries() {
+  const bakeryIds = Object.keys(bakeries);
+
+  if (bakeryIds.length === 0) {
+    return emptyState('📍', 'Yaqin nonvoyxona topilmadi', 'P2P tarmoqqa ulangan nonvoy bo\'lishi kerak');
+  }
+
+  // Calculate distances via GPS
+  let sorted = bakeryIds.map(id => ({ ...bakeries[id], id }));
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(pos => {
+      const myLat = pos.coords.latitude, myLng = pos.coords.longitude;
+      sorted.forEach(b => {
+        if (b.location) {
+          b.dist = calcDistance(myLat, myLng, b.location.lat, b.location.lng);
+        }
+      });
+      sorted.sort((a,b) => (a.dist||999) - (b.dist||999));
+    }, () => {}, { timeout: 5000 });
+  }
+
+  return `
+    <div class="section-title">📍 Nonvoyxonalar</div>
+    <div class="section-sub">P2P tarmoqdagi ${bakeryIds.length} ta nonvoy</div>
+    ${bakeryIds.map(id => {
+      const b = bakeries[id];
+      return `<div class="card bakery-item" style="margin-bottom:8px">
+        <div class="bakery-icon">🏪</div>
+        <div class="bakery-info">
+          <div class="bakery-name">${b.name}</div>
+          <div class="bakery-detail">${b.owner} · 📞 ${b.phone || '—'}${b.location ? ` · 📍 ${b.location.lat?.toFixed(4)}, ${b.location.lng?.toFixed(4)}` : ''}</div>
+        </div>
+        <span style="font-size:0.6rem;padding:3px 8px;border-radius:100px;background:rgba(76,175,80,0.15);color:var(--green);font-weight:600">🟢 Online</span>
+      </div>`;
+    }).join('')}
+  `;
+}
+
+function customerOrders() {
+  const userOrders = Object.values(myOrders).filter(o => o.customerId === myNodeId);
+  return `
+    <div class="section-title">📦 Buyurtmalarim</div>
+    <div class="section-sub">${userOrders.length} ta buyurtma</div>
+    ${userOrders.length === 0
+      ? emptyState('📦', 'Buyurtmalar yo\'q', 'Nonlardan tanlab buyurtma bering')
+      : userOrders.reverse().map(o => `
+        <div class="card" style="margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:0.65rem;color:var(--text-dim)">#${o.id.slice(-5)} · ${o.bakeryName || 'Nonvoy'}</span>
+            <span class="status-badge status-${o.status}">${o.status}</span>
+          </div>
+          <div style="font-size:0.78rem;color:var(--text);margin-bottom:4px">${(o.items||[]).map(i => `${i.name || i.productName} x${i.qty || i.quantity}`).join(', ')}</div>
+          <div style="font-size:0.72rem;font-weight:600;color:var(--gold)">${(o.total||0).toLocaleString()} so'm</div>
+          <div style="font-size:0.62rem;color:var(--text-dim)">📍 ${o.address || '—'}</div>
+        </div>
+      `).join('')}
+  `;
+}
+
+// ====== CART ======
+function addToCart(bakeryId, bakeryName, productId, productName, price) {
+  if (!bakeryId) { showToast('⚠️ Nonvoy tanlanmagan'); return; }
+  selectedBakeryId = bakeryId;
+  const key = productId;
+  if (cart[key]) cart[key].qty++;
+  else cart[key] = { id: productId, name: productName, price, qty: 1, bakeryId, bakeryName };
+  updateCartFab();
+  showToast(`✅ ${productName} savatga qo'shildi`);
+}
+
+function updateCartFab() {
+  const count = Object.values(cart).reduce((s,i) => s + i.qty, 0);
+  const existing = document.getElementById('cartFab');
+  if (existing) existing.querySelector('.badge').textContent = count;
+}
+
+function showCart() {
+  const items = Object.values(cart);
+  if (!items.length) { showToast('⚠️ Savat bo\'sh'); return; }
+  const total = items.reduce((s,i) => s + i.price * i.qty, 0);
+  const bakeryName = items[0]?.bakeryName || 'Nonvoy';
+
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML = `
+    <button class="btn btn-ghost btn-sm" style="float:right" onclick="closeModal()">✕</button>
+    <h2 style="font-size:1.1rem;color:var(--text-bright);margin-bottom:14px">🛒 Savat · ${bakeryName}</h2>
+    ${items.map(i => `
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;color:var(--text);padding:6px 0;border-bottom:1px solid var(--glass-border)">
+        <span>${i.name} x${i.qty}</span>
+        <span style="color:var(--gold);font-weight:600">${(i.price * i.qty).toLocaleString()} so'm</span>
+      </div>
+    `).join('')}
+    <div style="display:flex;justify-content:space-between;font-size:0.9rem;font-weight:700;color:var(--gold);padding:10px 0;margin-top:4px">
+      <span>Jami</span><span>${total.toLocaleString()} so'm</span>
+    </div>
+    <label style="margin-top:12px">Yetkazib berish manzili</label>
+    <textarea id="orderAddress" rows="2" style="margin-top:4px;min-height:50px" placeholder="Manzilni kiriting"></textarea>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:14px" onclick="placeOrder()">📡 Buyurtmani P2P yuborish</button>
+  `;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function placeOrder() {
+  const address = document.getElementById('orderAddress').value.trim();
+  if (!address) { showToast('⚠️ Manzilni kiriting'); return; }
+
+  const items = Object.values(cart);
+  const total = items.reduce((s,i) => s + i.price * i.qty, 0);
+  const orderId = 'ord_' + Date.now().toString(36) + Math.random().toString(36).slice(2,5);
+
+  const order = {
+    id: orderId,
+    bakeryId: selectedBakeryId || items[0]?.bakeryId || 'unknown',
+    bakeryName: items[0]?.bakeryName || 'Nonvoy',
+    customerId: myNodeId,
+    customerName: myName,
+    customerPhone: myPhone,
+    items: items.map(i => ({ productId: i.id, name: i.name, qty: i.qty, price: i.price })),
+    total,
+    address,
+    status: 'pending',
+    createdAt: Date.now(),
+  };
+
+  // Write to Gun.js P2P graph — sent to all peers
+  gun.get('orders').get(orderId).put(order);
+
+  // Also store under bakery's sub-graph
+  if (order.bakeryId) {
+    gun.get('bakeries').get(order.bakeryId).get('orders').get(orderId).put(order);
+  }
+
+  // Local state
+  myOrders[orderId] = { ...order, id: orderId };
+  orders[orderId] = { ...order, id: orderId };
+
+  cart = {};
+  selectedBakeryId = null;
+  closeModal();
+  updateCartFab();
+  document.getElementById('cartFab')?.remove();
+
+  showToast(`📡 #${orderId.slice(-6)} buyurtma P2P yuborildi!`);
+
+  // If this bakery is ourselves (for testing with multiple tabs)
+  if (myRole === 'seller') {
+    orders[orderId] = { ...order, id: orderId };
+    myOrders[orderId] = { ...order, id: orderId };
+  }
+
+  render();
+}
+
+// ====== UTILITIES ======
+function calcDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2-lat1)*Math.PI/180;
+  const dLng = (lng2-lng1)*Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))).toFixed(1);
+}
+
+function emptyState(icon, title, desc, hint) {
+  return `<div class="empty-state">
+    <span class="icon">${icon}</span>
+    <p>${title}</p>
+    <p class="hint">${desc}</p>
+    ${hint ? `<p class="hint" style="margin-top:6px">${hint}</p>` : ''}
+  </div>`;
+}
+
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+}
+
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+// ====== INIT ======
+showLogin();
+
+// Inject cart FAB
+setInterval(() => {
+  if (myRole !== 'customer') {
+    document.getElementById('cartFab')?.remove();
+    return;
+  }
+  if (!document.getElementById('cartFab') && myRole === 'customer') {
+    const fab = document.createElement('button');
+    fab.id = 'cartFab';
+    fab.className = 'btn btn-primary';
+    fab.style.cssText = 'position:fixed;bottom:24px;right:16px;z-index:50;padding:12px 20px;border-radius:100px;box-shadow:0 4px 20px var(--gold-dim)';
+    fab.innerHTML = '🛒 <span class="badge" style="margin-left:4px">0</span>';
+    fab.onclick = showCart;
+    document.body.appendChild(fab);
+  }
+  updateCartFab();
+}, 1000);
+</script>
+</body>
+</html>
