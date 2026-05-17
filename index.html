@@ -2,15 +2,14 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZIYOKOR NONLARI — Non Do'koni</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ZIYOKOR NONLARI — Non Marketplace</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-
 :root{
   --glass:rgba(255,255,255,0.05);
   --glass-border:rgba(255,255,255,0.08);
@@ -22,977 +21,1225 @@ html{scroll-behavior:smooth}
   --gold:#d4a574;
   --gold-dim:rgba(212,165,116,0.3);
   --accent:#e86a3a;
+  --green:#4caf50;
+  --blue:#42a5f5;
   --bg:#0a0806;
   --card-bg:rgba(255,255,255,0.04);
   --radius:16px;
-  --transition:all 0.4s cubic-bezier(0.16,1,0.3,1);
+  --transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
 }
-
-body{
-  font-family:'Inter',-apple-system,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  overflow-x:hidden;
-  line-height:1.5;
-  min-height:100vh;
-}
-
-/* ORB BACKGROUND */
-.orb{
-  position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(120px);
-}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.5;min-height:100vh}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(120px)}
 .orb-1{width:700px;height:700px;background:rgba(212,165,116,0.04);top:-200px;right:-200px;animation:orb1 25s ease-in-out infinite}
 .orb-2{width:500px;height:500px;background:rgba(232,106,58,0.03);bottom:-150px;left:-150px;animation:orb2 30s ease-in-out infinite}
-.orb-3{width:400px;height:400px;background:rgba(255,255,255,0.02);top:50%;left:50%;animation:orb3 20s ease-in-out infinite}
 @keyframes orb1{0%,100%{transform:translate(0,0)}40%{transform:translate(-80px,100px)}70%{transform:translate(60px,-40px)}}
 @keyframes orb2{0%,100%{transform:translate(0,0)}35%{transform:translate(100px,-80px)}65%{transform:translate(-40px,60px)}}
-@keyframes orb3{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.3)}}
+
+/* ====== LOGIN ====== */
+.login-screen{
+  position:fixed;inset:0;z-index:999;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--bg);
+  flex-direction:column;gap:24px;
+}
+.login-box{
+  background:rgba(255,255,255,0.03);
+  border:1px solid var(--glass-border);
+  border-radius:24px;padding:40px 36px;
+  max-width:380px;width:90vw;text-align:center;
+}
+.login-box h1{font-size:1.8rem;font-weight:800;color:var(--text-bright);margin-bottom:4px}
+.login-box h1 span{color:var(--gold)}
+.login-box p{color:var(--text-dim);font-size:0.85rem;margin-bottom:24px}
+.login-box select,.login-box input{
+  width:100%;padding:12px 16px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:12px;color:var(--text);font-size:0.9rem;
+  outline:none;margin-bottom:12px;font-family:inherit;
+}
+.login-box select option{background:#0a0806}
+.login-box button{
+  width:100%;padding:14px;
+  background:linear-gradient(135deg,#b8854a,var(--gold));
+  border:none;border-radius:12px;color:#fff;font-size:0.95rem;font-weight:600;
+  cursor:pointer;transition:var(--transition);font-family:inherit;
+}
+.login-box button:hover{opacity:0.9}
+.role-badge{
+  display:inline-block;padding:4px 12px;border-radius:100px;
+  font-size:0.7rem;font-weight:600;margin-bottom:16px;
+}
+
+/* ====== APP LAYOUT ====== */
+.app{display:none;min-height:100vh;position:relative;z-index:1}
+.app.active{display:flex;flex-direction:column}
 
 /* NAV */
 nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  padding:14px 32px;
   display:flex;align-items:center;justify-content:space-between;
-  background:rgba(10,8,6,0.4);
-  backdrop-filter:blur(24px) saturate(180%);
-  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  padding:12px 20px;
+  background:rgba(10,8,6,0.85);
+  backdrop-filter:blur(20px);
   border-bottom:1px solid var(--glass-border);
+  position:sticky;top:0;z-index:100;
 }
-.nav-logo{
-  font-size:1.15rem;font-weight:700;color:var(--text-bright);
-  text-decoration:none;letter-spacing:-0.5px;
-  display:flex;align-items:center;gap:10px;
+.nav-logo{font-size:1rem;font-weight:700;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+.nav-logo span{color:var(--gold)}
+.nav-user{display:flex;align-items:center;gap:10px}
+.nav-role{
+  font-size:0.65rem;padding:3px 10px;border-radius:100px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  color:var(--gold);font-weight:500;
 }
-.nav-logo span{color:var(--gold);font-weight:300}
-.nav-actions{display:flex;align-items:center;gap:12px}
 .nav-btn{
   background:var(--glass);border:1px solid var(--glass-border);
   color:var(--text-dim);border-radius:100px;
-  padding:8px 18px;font-size:0.78rem;font-weight:500;
-  cursor:pointer;transition:var(--transition);
-  font-family:inherit;display:flex;align-items:center;gap:7px;
+  padding:6px 14px;font-size:0.72rem;font-weight:500;
+  cursor:pointer;transition:var(--transition);font-family:inherit;
 }
-.nav-btn:hover{color:var(--text);border-color:var(--gold);background:var(--glass-hover)}
-.cart-badge{
-  background:var(--accent);color:#fff;
-  border-radius:50%;width:20px;height:20px;
-  font-size:0.65rem;font-weight:700;
-  display:flex;align-items:center;justify-content:center;
-}
+.nav-btn:hover{color:var(--text);border-color:var(--gold)}
 
-/* HERO */
-.hero{
-  position:relative;z-index:1;
-  padding:140px 32px 80px;text-align:center;
+/* TAB BAR */
+.tab-bar{
+  display:flex;background:rgba(255,255,255,0.02);
+  border-bottom:1px solid var(--glass-border);
+  overflow-x:auto;position:sticky;top:52px;z-index:99;
 }
-.hero-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:5px 16px;
-  background:var(--glass);backdrop-filter:blur(16px);
-  border:1px solid var(--glass-border);border-radius:100px;
-  color:var(--gold);font-size:0.65rem;font-weight:500;
-  letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{
+  padding:10px 18px;font-size:0.75rem;font-weight:500;
+  color:var(--text-dim);background:none;border:none;
+  cursor:pointer;transition:var(--transition);white-space:nowrap;
+  font-family:inherit;border-bottom:2px solid transparent;
 }
-.hero h1{
-  font-size:4rem;font-weight:800;line-height:1.05;
-  letter-spacing:-2px;color:var(--text-bright);
-  margin-bottom:14px;
-}
-.hero h1 em{color:var(--gold);font-style:normal}
-.hero p{
-  font-size:0.95rem;color:var(--text-dim);
-  max-width:460px;margin:0 auto 28px;font-weight:300;
-}
-.hero-search{
-  max-width:500px;margin:0 auto;
-  position:relative;
-}
-.hero-search input{
-  width:100%;padding:14px 20px 14px 46px;
-  background:var(--glass);border:1px solid var(--glass-border);
-  border-radius:100px;color:var(--text);font-size:0.9rem;
-  outline:none;transition:var(--transition);
-  font-family:inherit;
-}
-.hero-search input::placeholder{color:var(--text-dim)}
-.hero-search input:focus{border-color:var(--gold);background:var(--glass-hover)}
-.hero-search .search-icon{
-  position:absolute;left:18px;top:50%;transform:translateY(-50%);
-  color:var(--text-dim);font-size:0.9rem;
-}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+.tab-btn:hover{color:var(--text)}
 
-/* FILTERS */
-.filters{
-  position:relative;z-index:1;
-  padding:0 32px 20px;
-  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-  max-width:1320px;margin:0 auto;
-}
-.filter-btn{
-  padding:6px 18px;
-  background:var(--glass);border:1px solid var(--glass-border);
-  border-radius:100px;color:var(--text-dim);
-  font-size:0.72rem;font-weight:500;cursor:pointer;
-  transition:var(--transition);font-family:inherit;
-}
-.filter-btn.active,.filter-btn:hover{
-  border-color:var(--gold);color:var(--gold);background:rgba(212,165,116,0.08);
-}
-.sort-select{
-  margin-left:auto;padding:6px 16px;
-  background:var(--glass);border:1px solid var(--glass-border);
-  border-radius:100px;color:var(--text-dim);
-  font-size:0.72rem;font-weight:500;cursor:pointer;
-  transition:var(--transition);font-family:inherit;outline:none;
-}
-.sort-select:hover,.sort-select:focus{border-color:var(--gold);color:var(--text)}
-.sort-select option{background:#0a0806;color:var(--text)}
-.count-label{
-  font-size:0.72rem;color:var(--text-dim);
-  margin-left:8px;font-weight:400;
+/* PANELS */
+.panel{display:none;flex:1;padding:16px;max-width:1200px;margin:0 auto;width:100%}
+.panel.active{display:block}
+.panel-title{font-size:1.3rem;font-weight:700;color:var(--text-bright);margin-bottom:4px}
+.panel-sub{color:var(--text-dim);font-size:0.8rem;margin-bottom:16px}
+
+/* BREAD IMG */
+.bread-img{
+  width:100%;height:100%;object-fit:cover;display:block;
 }
 
 /* PRODUCT GRID */
-.products-section{
-  position:relative;z-index:1;
-  padding:0 32px 60px;
-  max-width:1320px;margin:0 auto;
+.p-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.p-card{
+  background:var(--card-bg);border:1px solid var(--glass-border);
+  border-radius:var(--radius);overflow:hidden;cursor:pointer;
+  transition:var(--transition);position:relative;
 }
-.products-grid{
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  gap:12px;
-}
-@media(max-width:1100px){.products-grid{grid-template-columns:repeat(5,1fr)}}
-@media(max-width:900px){.products-grid{grid-template-columns:repeat(4,1fr)}}
-@media(max-width:700px){.products-grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:480px){.products-grid{grid-template-columns:repeat(2,1fr)}}
-
-/* PRODUCT CARD */
-.prod-card{
-  background:var(--card-bg);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
-  border-radius:var(--radius);
-  border:1px solid var(--glass-border);
-  overflow:hidden;
-  transition:all 0.45s cubic-bezier(0.16,1,0.3,1);
-  cursor:pointer;
-  position:relative;
-  opacity:0;transform:translateY(20px);
-}
-.prod-card.visible{opacity:1;transform:translateY(0)}
-.prod-card:hover{
-  transform:translateY(-4px);
-  border-color:rgba(212,165,116,0.25);
-  box-shadow:0 12px 40px rgba(0,0,0,0.3),0 0 20px rgba(212,165,116,0.04);
-  background:rgba(255,255,255,0.06);
-}
-.prod-card.selected{
-  border-color:var(--gold);
-  box-shadow:0 0 0 1px var(--gold),0 12px 40px rgba(212,165,116,0.1);
-}
-.prod-img{
-  width:100%;aspect-ratio:1;
-  background:linear-gradient(135deg,#100a04,#1a0e06);
-  display:flex;align-items:center;justify-content:center;
-  position:relative;overflow:hidden;
-  padding:18%;
-}
-.prod-img svg{width:100%;height:100%;transition:transform 0.5s ease}
-.prod-card:hover .prod-img svg{transform:scale(1.06) rotate(1deg)}
-.prod-badge{
+.p-card:hover{transform:translateY(-3px);border-color:rgba(212,165,116,0.2)}
+.p-card-img{width:100%;aspect-ratio:1;overflow:hidden;background:#100a04}
+.p-card-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s}
+.p-card:hover .p-card-img img{transform:scale(1.05)}
+.p-card-badge{
   position:absolute;top:8px;left:8px;
-  background:rgba(232,106,58,0.9);
-  backdrop-filter:blur(8px);
-  color:#fff;border-radius:100px;
-  padding:3px 10px;font-size:0.6rem;font-weight:600;
-  letter-spacing:0.3px;
+  padding:3px 10px;border-radius:100px;font-size:0.6rem;font-weight:600;color:#fff;
 }
-.prod-fav{
-  position:absolute;top:8px;right:8px;
-  background:var(--glass);border:1px solid var(--glass-border);
-  backdrop-filter:blur(8px);
-  border-radius:50%;width:30px;height:30px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:0.75rem;cursor:pointer;
-  transition:var(--transition);line-height:1;
-}
-.prod-fav:hover{transform:scale(1.15);border-color:var(--gold)}
-.prod-body{padding:12px 14px 14px}
-.prod-tag{font-size:0.6rem;color:var(--gold);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
-.prod-name{font-size:0.82rem;font-weight:600;color:var(--text-bright);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.prod-desc{font-size:0.68rem;color:var(--text-dim);line-height:1.5;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.prod-foot{display:flex;align-items:center;justify-content:space-between}
-.prod-price{font-size:1.05rem;font-weight:700;color:var(--gold)}
-.prod-price sub{font-size:0.6rem;color:var(--text-dim);font-weight:400}
-.prod-add{
-  width:32px;height:32px;
-  background:linear-gradient(135deg,var(--gold),#b8854a);
-  border:none;border-radius:50%;
-  color:#fff;font-size:1.1rem;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
+.p-card-body{padding:10px 12px 12px}
+.p-card-name{font-size:0.8rem;font-weight:600;color:var(--text-bright);margin-bottom:2px}
+.p-card-desc{font-size:0.65rem;color:var(--text-dim);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.p-card-foot{display:flex;align-items:center;justify-content:space-between}
+.p-card-price{font-size:0.95rem;font-weight:700;color:var(--gold)}
+.p-card-price sub{font-size:0.55rem;color:var(--text-dim);font-weight:400}
+.p-add{
+  width:30px;height:30px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),#b8854a);border:none;
+  color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
   transition:var(--transition);
-  box-shadow:0 3px 12px var(--gold-dim);
 }
-.prod-add:hover{transform:scale(1.15) rotate(90deg);box-shadow:0 5px 20px var(--gold-dim)}
+.p-add:hover{transform:scale(1.15)}
 
-/* SELECTION TOOLBAR */
-.selection-toolbar{
-  position:fixed;bottom:0;left:0;right:0;z-index:90;
-  background:rgba(10,8,6,0.85);
-  backdrop-filter:blur(24px);
-  border-top:1px solid var(--glass-border);
-  padding:14px 32px;
+/* CART MINI */
+.cart-mini{
+  position:fixed;bottom:80px;right:16px;z-index:50;
+  background:linear-gradient(135deg,#b8854a,var(--gold));
+  color:#fff;border:none;border-radius:50%;
+  width:54px;height:54px;font-size:1.2rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 20px var(--gold-dim);transition:var(--transition);
+}
+.cart-mini:hover{transform:scale(1.08)}
+.cart-mini-badge{
+  position:absolute;top:-4px;right:-4px;
+  background:var(--accent);color:#fff;
+  width:20px;height:20px;border-radius:50%;
+  font-size:0.6rem;font-weight:700;display:flex;align-items:center;justify-content:center;
+}
+
+/* SEARCH */
+.search-box{
+  display:flex;gap:8px;margin-bottom:16px;
+}
+.search-box input{
+  flex:1;padding:10px 16px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:100px;color:var(--text);font-size:0.82rem;
+  outline:none;font-family:inherit;
+}
+.search-box input:focus{border-color:var(--gold)}
+.search-box input::placeholder{color:var(--text-dim)}
+
+/* BAKERY NEARBY */
+.bakeries-list{display:flex;flex-direction:column;gap:10px}
+.bakery-card{
+  display:flex;align-items:center;gap:14px;
+  background:var(--card-bg);border:1px solid var(--glass-border);
+  border-radius:var(--radius);padding:14px 16px;
+  transition:var(--transition);cursor:pointer;
+}
+.bakery-card:hover{border-color:rgba(212,165,116,0.2)}
+.bakery-icon{
+  width:48px;height:48px;border-radius:12px;
+  background:linear-gradient(135deg,#1a1006,#2a1a0a);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:1.3rem;
+}
+.bakery-info{flex:1}
+.bakery-name{font-size:0.88rem;font-weight:600;color:var(--text-bright)}
+.bakery-detail{font-size:0.72rem;color:var(--text-dim);margin-top:2px}
+.bakery-dist{font-size:0.72rem;color:var(--gold);font-weight:600;white-space:nowrap}
+.bakery-status{
+  font-size:0.62rem;padding:3px 8px;border-radius:100px;font-weight:600;
+}
+.bakery-status.open{background:rgba(76,175,80,0.15);color:var(--green)}
+.bakery-status.closed{background:rgba(255,107,107,0.15);color:#ff6b6b}
+
+/* ORDER TRACKING */
+.tracking{
+  display:flex;flex-direction:column;gap:16px;
+}
+.track-card{
+  background:var(--card-bg);border:1px solid var(--glass-border);
+  border-radius:var(--radius);padding:16px;position:relative;
+}
+.track-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:10px}
+.track-id{font-size:0.7rem;color:var(--text-dim);font-weight:500}
+.track-status{
+  font-size:0.65rem;padding:3px 10px;border-radius:100px;font-weight:600;
+}
+.track-status.pending{background:rgba(255,193,7,0.15);color:#ffc107}
+.track-status.accepted{background:rgba(66,165,245,0.15);color:var(--blue)}
+.track-status.baking{background:rgba(212,165,116,0.15);color:var(--gold)}
+.track-status.delivering{background:rgba(76,175,80,0.15);color:var(--green)}
+.track-status.delivered{background:rgba(76,175,80,0.25);color:#66bb6a}
+.track-items{font-size:0.85rem;color:var(--text);margin-bottom:8px}
+.track-total{font-size:0.8rem;font-weight:600;color:var(--gold)}
+.track-address{font-size:0.72rem;color:var(--text-dim);margin-top:4px}
+.track-time{font-size:0.7rem;color:var(--text-dim);margin-top:4px}
+.track-driver{
+  display:flex;align-items:center;gap:8px;margin-top:8px;
+  padding:8px 10px;background:var(--glass);border-radius:8px;
+}
+.track-driver-avatar{width:28px;height:28px;border-radius:50%;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;font-size:0.7rem}
+.track-driver-name{font-size:0.75rem;color:var(--text)}
+.track-driver-phone{font-size:0.65rem;color:var(--text-dim)}
+
+/* SELLER DASHBOARD */
+.stats-row{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:16px;
+}
+.stat-card{
+  background:var(--card-bg);border:1px solid var(--glass-border);
+  border-radius:12px;padding:14px;text-align:center;
+}
+.stat-num{font-size:1.4rem;font-weight:700;color:var(--gold)}
+.stat-label{font-size:0.65rem;color:var(--text-dim);margin-top:2px}
+
+.live-orders{display:flex;flex-direction:column;gap:10px}
+.live-order{
+  background:var(--card-bg);border:1px solid var(--glass-border);
+  border-radius:var(--radius);padding:14px 16px;
+  animation:fadeIn 0.3s ease;position:relative;
+}
+.live-order.new{border-color:var(--gold);box-shadow:0 0 20px var(--gold-dim)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.live-order-header{display:flex;justify-content:space-between;margin-bottom:6px}
+.live-order-id{font-size:0.7rem;color:var(--text-dim)}
+.live-order-time{font-size:0.65rem;color:var(--text-dim)}
+.live-order-items{font-size:0.82rem;color:var(--text);margin-bottom:6px}
+.live-order-total{font-size:0.85rem;font-weight:600;color:var(--gold);margin-bottom:8px}
+.live-order-addr{font-size:0.7rem;color:var(--text-dim);margin-bottom:10px}
+.live-order-actions{display:flex;gap:8px}
+.live-order-actions button{
+  padding:8px 16px;border-radius:100px;border:none;
+  font-size:0.72rem;font-weight:600;cursor:pointer;transition:var(--transition);
+  font-family:inherit;
+}
+.btn-accept{background:var(--green);color:#fff}
+.btn-accept:hover{opacity:0.85}
+.btn-reject{background:rgba(255,107,107,0.15);color:#ff6b6b;border:1px solid rgba(255,107,107,0.3)!important}
+.btn-reject:hover{background:rgba(255,107,107,0.25)}
+.btn-ready{background:var(--gold);color:#fff}
+.btn-ready:hover{opacity:0.85}
+.btn-assign{background:var(--blue);color:#fff}
+.btn-assign:hover{opacity:0.85}
+
+/* DRIVER */
+.driver-map{
+  background:var(--card-bg);border:1px solid var(--glass-border);
+  border-radius:var(--radius);height:200px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:16px;position:relative;overflow:hidden;
+}
+.driver-map-placeholder{
+  text-align:center;color:var(--text-dim);
+}
+.driver-map-placeholder .map-icon{font-size:3rem;display:block;margin-bottom:8px;opacity:0.4}
+
+/* SETTINGS */
+.settings-group{margin-bottom:20px}
+.settings-group h3{font-size:0.85rem;color:var(--text-bright);margin-bottom:10px;font-weight:600}
+.setting-row{
   display:flex;align-items:center;justify-content:space-between;
-  transform:translateY(100%);transition:var(--transition);
+  padding:12px 14px;background:var(--card-bg);border:1px solid var(--glass-border);
+  border-radius:10px;margin-bottom:6px;
 }
-.selection-toolbar.show{transform:translateY(0)}
-.sel-info{font-size:0.85rem;color:var(--text-dim)}
-.sel-info strong{color:var(--gold)}
-.sel-actions{display:flex;gap:10px}
-.sel-btn{
-  padding:8px 20px;border-radius:100px;border:1px solid var(--glass-border);
-  background:var(--glass);color:var(--text);font-size:0.78rem;
-  cursor:pointer;transition:var(--transition);font-family:inherit;font-weight:500;
+.setting-label{font-size:0.82rem;color:var(--text)}
+.setting-desc{font-size:0.68rem;color:var(--text-dim)}
+.setting-toggle{
+  width:44px;height:24px;border-radius:12px;
+  background:var(--glass-strong);border:none;cursor:pointer;
+  position:relative;transition:var(--transition);
 }
-.sel-btn:hover{background:var(--glass-hover);border-color:var(--gold)}
-.sel-btn.primary{background:var(--accent);border-color:transparent;color:#fff}
-.sel-btn.primary:hover{opacity:0.9}
-.sel-btn.danger{color:#ff6b6b;border-color:rgba(255,107,107,0.3)}
-.sel-btn.danger:hover{background:rgba(255,107,107,0.1)}
+.setting-toggle.on{background:var(--gold)}
+.setting-toggle::after{
+  content:'';position:absolute;top:2px;left:2px;
+  width:20px;height:20px;border-radius:50%;background:#fff;
+  transition:var(--transition);
+}
+.setting-toggle.on::after{left:22px}
+
+/* ADMIN */
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px}
+.admin-card{
+  background:var(--card-bg);border:1px solid var(--glass-border);
+  border-radius:var(--radius);padding:20px;text-align:center;
+}
+.admin-card .admin-icon{font-size:2rem;margin-bottom:8px}
+.admin-card .admin-val{font-size:1.6rem;font-weight:700;color:var(--gold)}
+.admin-card .admin-lbl{font-size:0.72rem;color:var(--text-dim)}
 
 /* MODAL */
 .modal-overlay{
   position:fixed;inset:0;z-index:200;
   background:rgba(0,0,0,0.6);backdrop-filter:blur(12px);
   display:flex;align-items:center;justify-content:center;
-  opacity:0;pointer-events:none;transition:opacity 0.35s;
+  opacity:0;pointer-events:none;transition:opacity 0.3s;
 }
 .modal-overlay.active{opacity:1;pointer-events:all}
 .modal{
-  background:rgba(16,12,8,0.95);
-  border:1px solid var(--glass-border);
-  border-radius:20px;max-width:680px;width:92vw;
-  display:flex;overflow:hidden;max-height:88vh;
-  box-shadow:0 40px 100px rgba(0,0,0,0.5);
-  transform:scale(0.92) translateY(20px);
-  transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  background:rgba(16,12,8,0.97);border:1px solid var(--glass-border);
+  border-radius:20px;max-width:500px;width:90vw;
+  padding:24px;max-height:85vh;overflow-y:auto;
+  transform:scale(0.92);transition:transform 0.3s cubic-bezier(0.16,1,0.3,1);
 }
-.modal-overlay.active .modal{transform:scale(1) translateY(0)}
-.modal-visual{
-  width:260px;min-width:260px;
-  background:linear-gradient(135deg,#120a04,#1e1208);
-  display:flex;align-items:center;justify-content:center;
-  padding:24px;position:relative;
+.modal-overlay.active .modal{transform:scale(1)}
+.modal-close-btn{
+  float:right;background:var(--glass);border:1px solid var(--glass-border);
+  color:var(--text-dim);border-radius:50%;width:30px;height:30px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.85rem;
 }
-.modal-visual svg{width:200px;height:200px;animation:floatModal 3.5s ease-in-out infinite}
-@keyframes floatModal{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.modal-close{
-  position:absolute;top:12px;right:12px;
-  background:var(--glass);border:1px solid var(--glass-border);
-  color:var(--text-dim);font-size:0.9rem;cursor:pointer;
-  width:30px;height:30px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  transition:var(--transition);
-}
-.modal-close:hover{color:var(--text);border-color:var(--gold)}
-.modal-body{padding:28px 28px;overflow-y:auto;flex:1}
-.modal-tag{font-size:0.6rem;color:var(--gold);font-weight:600;letter-spacing:2px;text-transform:uppercase}
-.modal-name{font-size:1.6rem;font-weight:700;color:var(--text-bright);margin:6px 0 10px}
-.modal-desc{color:var(--text-dim);font-size:0.85rem;line-height:1.7;margin-bottom:18px}
-.modal-specs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-.spec{
-  background:var(--glass);border:1px solid var(--glass-border);
-  border-radius:10px;padding:8px 14px;text-align:center;
-  backdrop-filter:blur(8px);min-width:70px;
-}
-.spec-val{font-weight:600;font-size:0.85rem;color:var(--gold)}
-.spec-lbl{font-size:0.62rem;color:var(--text-dim);margin-top:2px}
-.qty-row{display:flex;align-items:center;gap:14px;margin-bottom:16px}
-.qty-ctrl{
-  display:flex;align-items:center;
-  border:1px solid var(--glass-border);border-radius:100px;
-  overflow:hidden;backdrop-filter:blur(8px);background:var(--glass);
-}
-.qty-btn{
-  background:none;border:none;color:var(--text);
-  width:36px;height:36px;font-size:1rem;
-  cursor:pointer;font-weight:700;transition:background 0.2s;
-  font-family:inherit;
-}
-.qty-btn:hover{background:var(--glass-hover)}
-.qty-num{width:36px;text-align:center;font-weight:600;color:var(--gold);font-size:0.9rem}
-.modal-price{font-size:1.5rem;font-weight:700;color:var(--gold)}
-.modal-add-btn{
-  width:100%;
-  background:linear-gradient(135deg,#b8854a,var(--gold));
-  color:#fff;border:none;border-radius:100px;
-  padding:14px;font-size:0.88rem;font-weight:600;
-  cursor:pointer;transition:var(--transition);
-  box-shadow:0 5px 20px var(--gold-dim);
-  font-family:inherit;
-}
-.modal-add-btn:hover{opacity:0.92;transform:translateY(-2px)}
+.modal h2{font-size:1.2rem;color:var(--text-bright);margin-bottom:12px}
 
-/* CART */
-.cart-drawer{
-  position:fixed;right:0;top:0;bottom:0;
-  width:380px;z-index:300;
-  background:rgba(12,10,8,0.97);
-  backdrop-filter:blur(24px);
+/* ORDER CONFIRM */
+.order-confirm-item{display:flex;justify-content:space-between;padding:6px 0;font-size:0.85rem;color:var(--text)}
+.order-confirm-total{display:flex;justify-content:space-between;padding:10px 0;font-size:0.95rem;font-weight:600;color:var(--gold);border-top:1px solid var(--glass-border);margin-top:6px}
+.order-confirm-addr{margin:12px 0}
+.order-confirm-addr textarea{width:100%;padding:10px;background:var(--glass);border:1px solid var(--glass-border);border-radius:10px;color:var(--text);font-size:0.8rem;outline:none;resize:none;font-family:inherit;min-height:60px}
+.order-confirm-addr textarea:focus{border-color:var(--gold)}
+.order-confirm-btn{width:100%;padding:14px;background:linear-gradient(135deg,#b8854a,var(--gold));border:none;border-radius:12px;color:#fff;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;transition:var(--transition)}
+.order-confirm-btn:hover{opacity:0.9}
+
+/* CART DRAWER */
+.cart-drw{
+  position:fixed;right:0;top:0;bottom:0;width:360px;z-index:300;
+  background:rgba(12,10,8,0.98);backdrop-filter:blur(24px);
   border-left:1px solid var(--glass-border);
-  transform:translateX(100%);
-  transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
-  display:flex;flex-direction:column;
-  box-shadow:-12px 0 60px rgba(0,0,0,0.5);
+  transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.16,1,0.3,1);
+  display:flex;flex-direction:column;box-shadow:-12px 0 60px rgba(0,0,0,0.5);
 }
-.cart-drawer.open{transform:translateX(0)}
-.cart-head{
-  border-bottom:1px solid var(--glass-border);
-  padding:18px 22px;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.cart-head h3{font-size:1.1rem;color:var(--text-bright);font-weight:600}
-.cart-x{
-  background:var(--glass);border:1px solid var(--glass-border);
-  color:var(--text-dim);border-radius:50%;width:32px;height:32px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:var(--transition);
-}
-.cart-x:hover{border-color:var(--gold);color:var(--text)}
-.cart-body{flex:1;overflow-y:auto;padding:14px}
-.cart-item{
-  display:flex;align-items:center;gap:10px;
-  background:var(--glass);border:1px solid var(--glass-border);
-  border-radius:12px;padding:10px 12px;margin-bottom:8px;
-  transition:var(--transition);
-}
-.cart-item:hover{border-color:rgba(212,165,116,0.2)}
-.ci-img{
-  width:44px;height:44px;border-radius:8px;
-  background:linear-gradient(135deg,#100a04,#1a0e06);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-.ci-img svg{width:34px;height:34px}
-.ci-info{flex:1;min-width:0}
-.ci-name{font-weight:600;font-size:0.82rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ci-price{font-size:0.75rem;color:var(--gold);font-weight:600;margin-top:2px}
-.ci-qty{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.cqb{
-  background:var(--glass);border:1px solid var(--glass-border);
-  border-radius:50%;width:26px;height:26px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:0.8rem;font-weight:700;color:var(--text);
-  transition:var(--transition);
-}
-.cqb:hover{background:var(--glass-hover);border-color:var(--gold)}
-.ci-qnum{font-weight:600;color:var(--gold);min-width:16px;text-align:center;font-size:0.85rem}
-.cart-empty{text-align:center;padding:60px 20px;color:var(--text-dim)}
-.cart-empty .ce-icon{font-size:3rem;display:block;margin-bottom:10px;opacity:0.4}
-.cart-footer{padding:16px 20px;border-top:1px solid var(--glass-border)}
-.cart-total{
-  display:flex;justify-content:space-between;
-  font-size:0.95rem;font-weight:600;color:var(--text);margin-bottom:12px;
-}
-.cart-total-price{color:var(--gold)}
-.checkout-btn{
-  width:100%;
-  background:linear-gradient(135deg,#b8854a,var(--gold));
-  color:#fff;border:none;border-radius:100px;
-  padding:14px;font-size:0.85rem;font-weight:600;
-  cursor:pointer;transition:var(--transition);
-  font-family:inherit;
-}
-.checkout-btn:hover{opacity:0.92;transform:translateY(-2px)}
-.cart-notes{
-  margin-top:10px;
-}
-.cart-notes textarea{
-  width:100%;padding:10px 14px;
-  background:var(--glass);border:1px solid var(--glass-border);
-  border-radius:10px;color:var(--text-dim);
-  font-size:0.75rem;outline:none;resize:none;
-  font-family:inherit;transition:var(--transition);
-}
-.cart-notes textarea:focus{border-color:var(--gold);color:var(--text)}
+.cart-drw.open{transform:translateX(0)}
+.cart-drw-head{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--glass-border)}
+.cart-drw-head h3{font-size:1rem;color:var(--text-bright)}
+.cart-drw-body{flex:1;overflow-y:auto;padding:12px}
+.cart-drw-empty{text-align:center;padding:50px 20px;color:var(--text-dim)}
+.cart-drw-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--glass);border:1px solid var(--glass-border);border-radius:10px;margin-bottom:8px}
+.cart-drw-item-img{width:40px;height:40px;border-radius:8px;overflow:hidden;flex-shrink:0}
+.cart-drw-item-img img{width:100%;height:100%;object-fit:cover}
+.cart-drw-item-info{flex:1}
+.cart-drw-item-name{font-size:0.8rem;color:var(--text);font-weight:500}
+.cart-drw-item-price{font-size:0.72rem;color:var(--gold)}
+.cart-drw-item-qty{display:flex;align-items:center;gap:6px}
+.cart-drw-qty-btn{width:24px;height:24px;border-radius:50%;background:var(--glass);border:1px solid var(--glass-border);color:var(--text);font-size:0.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.cart-drw-qty{font-size:0.8rem;color:var(--gold);min-width:14px;text-align:center}
+.cart-drw-foot{padding:14px 18px;border-top:1px solid var(--glass-border)}
+.cart-drw-total{display:flex;justify-content:space-between;font-size:0.9rem;font-weight:600;color:var(--text);margin-bottom:10px}
+.cart-drw-total span:last-child{color:var(--gold)}
+.cart-drw-btn{width:100%;padding:13px;background:linear-gradient(135deg,#b8854a,var(--gold));border:none;border-radius:100px;color:#fff;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:inherit}
 
 /* TOAST */
 .toast{
-  position:fixed;bottom:28px;left:50%;
-  transform:translateX(-50%) translateY(80px);
-  background:rgba(16,12,8,0.95);
-  border:1px solid var(--glass-border);
-  color:var(--text);border-radius:100px;
-  padding:12px 24px;font-size:0.82rem;font-weight:500;
-  z-index:500;transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
-  backdrop-filter:blur(20px);white-space:nowrap;
-  box-shadow:0 8px 30px rgba(0,0,0,0.4);
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:rgba(16,12,8,0.95);border:1px solid var(--glass-border);backdrop-filter:blur(20px);
+  color:var(--text);border-radius:100px;padding:10px 22px;font-size:0.8rem;font-weight:500;
+  z-index:500;transition:transform 0.35s cubic-bezier(0.16,1,0.3,1);
+  white-space:nowrap;box-shadow:0 8px 30px rgba(0,0,0,0.4);
 }
 .toast.show{transform:translateX(-50%) translateY(0)}
 
-/* FAVORITES FILTER */
-.filter-group{display:flex;align-items:center;gap:8px;margin-left:auto}
-.fav-filter-btn{
-  padding:6px 14px;border-radius:100px;border:1px solid var(--glass-border);
-  background:var(--glass);color:var(--text-dim);font-size:0.7rem;
-  cursor:pointer;transition:var(--transition);font-family:inherit;
+@media(max-width:600px){
+  .p-grid{grid-template-columns:repeat(2,1fr)}
+  .cart-drw{width:100%}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .login-box{padding:28px 20px}
 }
-.fav-filter-btn.active{color:#ff6b6b;border-color:#ff6b6b;background:rgba(255,107,107,0.08)}
-.fav-filter-btn:hover{border-color:var(--gold)}
-@media(max-width:800px){
-  .filter-group{margin-left:0;width:100%;order:10}
-  .sort-select{margin-left:0}
-}
-
-/* COMPARE PANEL */
-.compare-panel{
-  position:fixed;bottom:80px;right:24px;z-index:80;
-  background:rgba(12,10,8,0.95);
-  backdrop-filter:blur(20px);
-  border:1px solid var(--glass-border);
-  border-radius:16px;padding:16px 20px;
-  min-width:240px;
-  transform:translateY(120px);opacity:0;
-  transition:var(--transition);pointer-events:none;
-}
-.compare-panel.show{transform:translateY(0);opacity:1;pointer-events:all}
-.compare-panel h4{font-size:0.8rem;color:var(--text-bright);margin-bottom:10px;font-weight:600}
-.compare-items{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
-.compare-chip{
-  background:var(--glass);border:1px solid var(--glass-border);
-  border-radius:100px;padding:4px 12px;font-size:0.7rem;
-  color:var(--text-dim);display:flex;align-items:center;gap:6px;
-}
-.compare-chip .remove-chip{cursor:pointer;color:#ff6b6b;font-size:0.8rem;line-height:1}
-.compare-btn{
-  width:100%;padding:8px;
-  background:var(--glass);border:1px solid var(--glass-border);
-  border-radius:100px;color:var(--gold);font-size:0.75rem;
-  cursor:pointer;transition:var(--transition);font-family:inherit;
-}
-.compare-btn:hover{background:var(--glass-hover);border-color:var(--gold)}
-
-/* EMPTY / NOT FOUND */
-.not-found{text-align:center;padding:60px 20px;color:var(--text-dim);grid-column:1/-1}
-.not-found .nf-icon{font-size:3rem;display:block;margin-bottom:12px;opacity:0.4}
-
-/* FOOTER */
-footer{
-  position:relative;z-index:1;
-  padding:28px 32px;text-align:center;
-  color:var(--text-dim);font-size:0.72rem;
-  border-top:1px solid var(--glass-border);
-}
-
-/* SCROLLBAR */
-::-webkit-scrollbar{width:5px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--glass-strong);border-radius:10px}
 </style>
 </head>
 <body>
 
+<!-- ORBS -->
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
 
-<!-- NAV -->
-<nav>
-  <a href="#" class="nav-logo">ZIYOKOR <span>NONLARI</span></a>
-  <div class="nav-actions">
-    <button class="nav-btn" onclick="toggleFavFilter()" id="favFilterBtn">❤️ Sevimlilar</button>
-    <button class="nav-btn" onclick="openCart()">
-      🛒 Savat <span class="cart-badge" id="cartBadge">0</span>
-    </button>
-  </div>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-badge">🌟 Namangan · Har kuni yangi · 2026</div>
-  <h1>ZIYOKOR<br><em>NONLARI</em></h1>
-  <p>30 xil turdagi eng mazali va sifatli non mahsulotlari — bir joyda, eng qulay narxlarda</p>
-  <div class="hero-search">
-    <span class="search-icon">🔍</span>
-    <input type="text" id="searchInput" placeholder="Non nomini yozing..." oninput="renderProducts()">
-  </div>
-</section>
-
-<!-- FILTERS -->
-<div class="filters">
-  <button class="filter-btn active" onclick="filterCat('all',this)">🏠 Barchasi</button>
-  <button class="filter-btn" onclick="filterCat('tandir',this)">🔥 Tandir</button>
-  <button class="filter-btn" onclick="filterCat('premium',this)">⭐ Premium</button>
-  <button class="filter-btn" onclick="filterCat('qandol',this)">🍞 Qandol</button>
-  <button class="filter-btn" onclick="filterCat('sog-lom',this)">🌿 Sog'lom</button>
-  <button class="filter-btn" onclick="filterCat('maxsus',this)">✨ Maxsus</button>
-  <select class="sort-select" id="sortSelect" onchange="renderProducts()">
-    <option value="default">Standart</option>
-    <option value="price-asc">Narx ↑</option>
-    <option value="price-desc">Narx ↓</option>
-    <option value="name">Nomi A-Z</option>
-  </select>
-  <span class="count-label" id="countLabel">30 ta mahsulot</span>
-</div>
-
-<!-- PRODUCTS -->
-<section class="products-section">
-  <div class="products-grid" id="productsGrid"></div>
-</section>
-
-<!-- SELECTION TOOLBAR -->
-<div class="selection-toolbar" id="selectionToolbar">
-  <div class="sel-info">Tanlangan: <strong id="selCount">0</strong> ta non</div>
-  <div class="sel-actions">
-    <button class="sel-btn" onclick="clearSelection()">Bekor qilish</button>
-    <button class="sel-btn primary" onclick="addSelectedToCart()">🛒 Savatga qo'shish</button>
-    <button class="sel-btn" onclick="compareSelected()">📊 Taqqoslash</button>
+<!-- ====== LOGIN SCREEN ====== -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <h1>ZIYOKOR<br><span>NONLARI</span></h1>
+    <p>Non marketplace platformasiga xush kelibsiz</p>
+    <select id="roleSelect">
+      <option value="customer">🛒 Xaridor</option>
+      <option value="seller">🏪 Sotuvchi (Nonvoy)</option>
+      <option value="driver">🚚 Yetkazib beruvchi</option>
+      <option value="admin">⚙️ Administrator</option>
+    </select>
+    <input type="text" id="nameInput" placeholder="Ismingiz" value="Xoleric">
+    <input type="text" id="phoneInput" placeholder="Telefon raqam" value="+998 99 392 11 57">
+    <button onclick="login()">Kirish →</button>
   </div>
 </div>
 
-<!-- COMPARE PANEL -->
-<div class="compare-panel" id="comparePanel">
-  <h4>📊 Taqqoslash</h4>
-  <div class="compare-items" id="compareItems"></div>
-  <button class="compare-btn" onclick="showCompareModal()">Taqqoslashni ko'rish →</button>
+<!-- ====== APP ====== -->
+<div class="app" id="app">
+  <nav>
+    <div class="nav-logo">ZIYOKOR <span>NONLARI</span></div>
+    <div class="nav-user">
+      <span class="nav-role" id="navRoleLabel">Xaridor</span>
+      <span style="font-size:0.8rem;color:var(--text-dim)" id="navUserName">User</span>
+      <button class="nav-btn" onclick="logout()">Chiqish</button>
+    </div>
+  </nav>
+
+  <div class="tab-bar" id="tabBar"></div>
+
+  <!-- CUSTOMER PANELS -->
+  <div class="panel" id="panelProducts">
+    <div class="panel-title">🛒 Nonlar</div>
+    <div class="panel-sub">30 xil turdagi mazali nonlar</div>
+    <div class="search-box">
+      <input type="text" id="prodSearch" placeholder="Non qidirish..." oninput="renderProducts()">
+    </div>
+    <div class="p-grid" id="productsGrid"></div>
+  </div>
+
+  <div class="panel" id="panelBakeries">
+    <div class="panel-title">📍 Yaqin nonvoyxonalar</div>
+    <div class="panel-sub">GPS orqali eng yaqin nonvoylarni toping</div>
+    <div class="bakeries-list" id="bakeriesList"></div>
+  </div>
+
+  <div class="panel" id="panelOrders">
+    <div class="panel-title">📦 Mening buyurtmalarim</div>
+    <div class="panel-sub">Barcha buyurtmalaringiz tarixi</div>
+    <div id="customerOrders"></div>
+  </div>
+
+  <div class="panel" id="panelSettings">
+    <div class="panel-title">⚙️ Sozlamalar</div>
+    <div class="panel-sub">Profil va platforma sozlamalari</div>
+    <div class="settings-group">
+      <h3>Shaxsiy ma'lumotlar</h3>
+      <div class="setting-row"><div><div class="setting-label">Ism</div><div class="setting-desc" id="sName">Xoleric</div></div></div>
+      <div class="setting-row"><div><div class="setting-label">Telefon</div><div class="setting-desc" id="sPhone">+998 99 392 11 57</div></div></div>
+    </div>
+    <div class="settings-group">
+      <h3>Bildirishnomalar</h3>
+      <div class="setting-row"><div><div class="setting-label">Push bildirishnoma</div></div><button class="setting-toggle on" id="notifToggle" onclick="toggleSetting(this)"></button></div>
+      <div class="setting-row"><div><div class="setting-label">Buyurtma holati</div></div><button class="setting-toggle on" onclick="toggleSetting(this)"></button></div>
+    </div>
+    <div class="settings-group">
+      <h3>Ma'lumot</h3>
+      <div class="setting-row"><div><div class="setting-label">Versiya</div><div class="setting-desc">2.0.0 — Real-time platform</div></div></div>
+    </div>
+  </div>
+
+  <!-- SELLER PANELS -->
+  <div class="panel" id="panelDashboard">
+    <div class="panel-title">📊 Nonvoyxonam</div>
+    <div class="panel-sub">Real-time buyurtmalar va statistika</div>
+    <div class="stats-row" id="sellerStats"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <h3 style="font-size:0.9rem;color:var(--text-bright)">🟢 Jonli buyurtmalar</h3>
+      <span style="font-size:0.7rem;color:var(--gold)" id="liveCount">0 ta</span>
+    </div>
+    <div class="live-orders" id="liveOrders"></div>
+  </div>
+
+  <div class="panel" id="panelSellerProducts">
+    <div class="panel-title">🍞 Mening nonlarim</div>
+    <div class="panel-sub">Mahsulotlarimni boshqarish</div>
+    <div class="p-grid" id="sellerProductsGrid"></div>
+  </div>
+
+  <div class="panel" id="panelSellerHistory">
+    <div class="panel-title">📋 Buyurtmalar tarixi</div>
+    <div class="panel-sub">Barcha bajarilgan buyurtmalar</div>
+    <div id="sellerHistory"></div>
+  </div>
+
+  <!-- DRIVER PANELS -->
+  <div class="panel" id="panelDeliveries">
+    <div class="panel-title">🚚 Yetkazib berish</div>
+    <div class="panel-sub">Yangi topshiriqlar va yo'nalishlar</div>
+    <div id="driverDeliveries"></div>
+  </div>
+
+  <div class="panel" id="panelDriverHistory">
+    <div class="panel-title">📋 Yetkazish tarixi</div>
+    <div class="panel-sub">Barcha yetkazilgan buyurtmalar</div>
+    <div id="driverHistory"></div>
+  </div>
+
+  <!-- ADMIN PANELS -->
+  <div class="panel" id="panelAdmin">
+    <div class="panel-title">⚙️ Admin panel</div>
+    <div class="panel-sub">Platformani boshqarish</div>
+    <div class="admin-grid" id="adminStats"></div>
+    <h3 style="font-size:0.85rem;color:var(--text-bright);margin-bottom:10px;margin-top:16px">🟢 Barcha jonli buyurtmalar</h3>
+    <div id="adminLiveOrders"></div>
+  </div>
+
+  <div class="panel" id="panelAdminUsers">
+    <div class="panel-title">👥 Foydalanuvchilar</div>
+    <div class="panel-sub">Barcha xaridorlar, sotuvchilar va haydovchilar</div>
+    <div id="adminUsers"></div>
+  </div>
 </div>
+
+<!-- CART DRAWER -->
+<div class="cart-drw" id="cartDrawer">
+  <div class="cart-drw-head"><h3>🛒 Savat</h3><button class="modal-close-btn" onclick="closeCart()">✕</button></div>
+  <div class="cart-drw-body" id="cartBody"></div>
+  <div class="cart-drw-foot">
+    <div class="cart-drw-total"><span>Jami:</span><span id="cartTotal">0 so'm</span></div>
+    <button class="cart-drw-btn" onclick="showOrderModal()">📦 Buyurtma berish</button>
+  </div>
+</div>
+
+<!-- CART MINI -->
+<button class="cart-mini" id="cartMini" onclick="openCart()">
+  🛒<span class="cart-mini-badge" id="cartBadge">0</span>
+</button>
 
 <!-- MODAL -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModalBg(event)">
-  <div class="modal" id="modal">
-    <div class="modal-visual" id="modalVisual"></div>
-    <div class="modal-body">
-      <div class="modal-tag" id="mTag"></div>
-      <h2 class="modal-name" id="mName"></h2>
-      <p class="modal-desc" id="mDesc"></p>
-      <div class="modal-specs" id="mSpecs"></div>
-      <div class="qty-row">
-        <div class="qty-ctrl">
-          <button class="qty-btn" onclick="chQty(-1)">−</button>
-          <span class="qty-num" id="qtyNum">1</span>
-          <button class="qty-btn" onclick="chQty(1)">+</button>
-        </div>
-        <span class="modal-price" id="mPrice"></span>
-      </div>
-      <button class="modal-add-btn" onclick="addFromModal()">🛒 Savatga qo'shish</button>
-    </div>
-  </div>
-</div>
-
-<!-- CART -->
-<div class="cart-drawer" id="cartDrawer">
-  <div class="cart-head">
-    <h3>🛒 Savat</h3>
-    <button class="cart-x" onclick="closeCart()">✕</button>
-  </div>
-  <div class="cart-body" id="cartBody"></div>
-  <div class="cart-footer">
-    <div class="cart-total">
-      <span>Jami:</span>
-      <span class="cart-total-price" id="cartTotal">0 so'm</span>
-    </div>
-    <div class="cart-notes">
-      <textarea id="orderNote" placeholder="Eslatma qo'shing (masalan: soat 9 ga qoldiring...)" rows="2"></textarea>
-    </div>
-    <button class="checkout-btn" onclick="checkout()" style="margin-top:10px">
-      📞 Buyurtma berish
-    </button>
-  </div>
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalContent"></div>
 </div>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<footer>
-  © 2026 <strong>ZIYOKOR NONLARI</strong> — Namangan, O'zbekiston
-</footer>
-
 <script>
-// ======== PRODUCT DATA (30 xil non) ========
-const products = [
-  { id:1, name:'Oq non', tag:'An\'anaviy', cat:'tandir', price:8000, unit:'dona', desc:'Klassik oq non. Har kuni ertalab yangi pishiriladi, yumshoq va mazali.', weight:'400g', cal:'260kcal', shelf:'2 kun', badge:'💰 Tejam' },
-  { id:2, name:'Tandir noni', tag:'Tandir', cat:'tandir', price:15000, unit:'dona', desc:'An\'anaviy tandirda pishgan xushbo\'y non. Tashqi qobiqli, ichi yumshoq va mazali.', weight:'600g', cal:'280kcal', shelf:'3 kun', badge:'🔥 Bestseller' },
-  { id:3, name:'Patir non', tag:'Yog\'li', cat:'tandir', price:12000, unit:'dona', desc:'Qatlamli yog\'li patir non. Qo\'y yog\'ida pishirilgan, choy bilan ajoyib.', weight:'350g', cal:'320kcal', shelf:'3 kun', badge:'🔥 Bestseller' },
-  { id:4, name:'Kulcha non', tag:'Kulcha', cat:'tandir', price:5000, unit:'dona', desc:'Kichik yumaloq kulcha. Nonushta uchun ideal, sutli xamirdan tayyorlanadi.', weight:'150g', cal:'180kcal', shelf:'2 kun', badge:'💰 Tejam' },
-  { id:5, name:'Samarqand noni', tag:'Samarqand', cat:'premium', price:25000, unit:'dona', desc:'Mashhur Samarqand noni. Katta, naqshli va betakror ta\'mga ega.', weight:'800g', cal:'290kcal', shelf:'4 kun', badge:'⭐ Premium' },
-  { id:6, name:'Buxoro noni', tag:'Buxoro', cat:'premium', price:22000, unit:'dona', desc:'Buxorocha maxsus retsept. Uzoq vaqt eskimaydi, o\'ziga xos ta\'m.', weight:'750g', cal:'285kcal', shelf:'4 kun', badge:'⭐ Premium' },
-  { id:7, name:'Farg\'ona noni', tag:'Farg\'ona', cat:'tandir', price:14000, unit:'dona', desc:'Farg\'ona usulida pishgan non. O\'ziga xos hid va mazali ta\'m.', weight:'500g', cal:'270kcal', shelf:'2 kun', badge:'' },
-  { id:8, name:'Qora non', tag:'Kepakli', cat:'sog-lom', price:12000, unit:'dona', desc:'Kepakli foydali qora non. Sog\'lom hayot uchun eng to\'g\'ri tanlov.', weight:'400g', cal:'220kcal', shelf:'3 kun', badge:'🌿 Organik' },
-  { id:9, name:'Zog\'ora non', tag:'Makkajo\'xori', cat:'sog-lom', price:10000, unit:'dona', desc:'Makkajo\'xori unidan tayyorlangan. Shirin va nozik ta\'mga ega.', weight:'400g', cal:'240kcal', shelf:'2 kun', badge:'🌿 Organik' },
-  { id:10, name:'Yupqa non', tag:'Yupqa', cat:'tandir', price:7000, unit:'dona', desc:'Yupqa yoyilgan tez pishadigan non. Lavash o\'rnida ham ishlating.', weight:'250g', cal:'200kcal', shelf:'1 kun', badge:'💰 Tejam' },
-  { id:11, name:'Qalin non', tag:'Qalin', cat:'tandir', price:10000, unit:'dona', desc:'Qalin va yumshoq non. Ayniqsa sho\'rva va mastava bilan zo\'r keladi.', weight:'500g', cal:'300kcal', shelf:'2 kun', badge:'' },
-  { id:12, name:'Suzma non', tag:'Suzma', cat:'tandir', price:11000, unit:'dona', desc:'Suzma qo\'shilgan maxsus non. Juda mayin va yengil his qiladi.', weight:'400g', cal:'250kcal', shelf:'2 kun', badge:'' },
-  { id:13, name:'Qatiqli non', tag:'Nordon', cat:'qandol', price:13000, unit:'dona', desc:'Qatiq bilan tayyorlangan yumshoq non. Nordonmaza ta\'mi bor.', weight:'350g', cal:'230kcal', shelf:'1 kun', badge:'' },
-  { id:14, name:'Yog\'li non', tag:'Sariyog\'', cat:'qandol', price:14000, unit:'dona', desc:'Sariyog\' qo\'shilgan boy ta\'mli non. Juda mayin va xushbo\'y.', weight:'300g', cal:'350kcal', shelf:'2 kun', badge:'' },
-  { id:15, name:'Pishloqli non', tag:'Pishloq', cat:'qandol', price:18000, unit:'dona', desc:'Ichida erigan pishloq bo\'lgan mazali non. Issiq holda ajoyib.', weight:'350g', cal:'340kcal', shelf:'1 kun', badge:'' },
-  { id:16, name:'Go\'shtli non', tag:'Go\'sht', cat:'maxsus', price:25000, unit:'dona', desc:'Go\'sht bilan to\'ldirilgan to\'yimli non. Tushlik uchun ideal.', weight:'450g', cal:'380kcal', shelf:'1 kun', badge:'🔥 Bestseller' },
-  { id:17, name:'Tuxumli non', tag:'Tuxum', cat:'qandol', price:15000, unit:'dona', desc:'Tuxum qo\'shilgan boy va yumshoq non. Nonushta uchun foydali.', weight:'300g', cal:'290kcal', shelf:'1 kun', badge:'' },
-  { id:18, name:'Ziravorli non', tag:'Ziravor', cat:'maxsus', price:12000, unit:'dona', desc:'Turli ziravorlar bilan tayyorlangan. O\'zbek taomlariga mukammal qo\'shimcha.', weight:'350g', cal:'260kcal', shelf:'2 kun', badge:'' },
-  { id:19, name:'Sedanali non', tag:'Kunjut', cat:'tandir', price:13000, unit:'dona', desc:'Kunjut urug\'lari bilan qoplangan. Yengil va mazali gazak.', weight:'300g', cal:'270kcal', shelf:'2 kun', badge:'🆕 Yangi' },
-  { id:20, name:'Qovoqli non', tag:'Qovoq', cat:'sog-lom', price:14000, unit:'dona', desc:'Qovoq pyuresi qo\'shilgan shirin non. Bolalar juda yoqtiradi.', weight:'400g', cal:'220kcal', shelf:'2 kun', badge:'🆕 Yangi' },
-  { id:21, name:'Kartoshkali non', tag:'Kartoshka', cat:'maxsus', price:12000, unit:'dona', desc:'Kartoshka qo\'shilgan yumshoq non. Uzoq vaqt eskimaydi.', weight:'400g', cal:'250kcal', shelf:'2 kun', badge:'' },
-  { id:22, name:'Piyozli non', tag:'Piyoz', cat:'maxsus', price:11000, unit:'dona', desc:'Piyoz bilan tayyorlangan xushbo\'y non. Go\'shtli taomlarga eng yaxshi qo\'shimcha.', weight:'350g', cal:'240kcal', shelf:'1 kun', badge:'' },
-  { id:23, name:'Ko\'k noni', tag:'Ko\'kat', cat:'sog-lom', price:12000, unit:'dona', desc:'Ko\'katlar bilan tayyorlangan yashil non. Bahorgi taomlar uchun ideal.', weight:'300g', cal:'210kcal', shelf:'1 kun', badge:'🌿 Organik' },
-  { id:24, name:'Asalli non', tag:'Asal', cat:'qandol', price:18000, unit:'dona', desc:'Asal qo\'shilgan shirin non. Choy bilan birga tortish uchun ajoyib.', weight:'250g', cal:'310kcal', shelf:'3 kun', badge:'🆕 Yangi' },
-  { id:25, name:'Mayizli non', tag:'Mayiz', cat:'qandol', price:16000, unit:'dona', desc:'Mayiz bilan to\'ldirilgan shirin non. Ertalabki choy uchun zo\'r.', weight:'300g', cal:'290kcal', shelf:'3 kun', badge:'' },
-  { id:26, name:'Yong\'oqli non', tag:'Yong\'oq', cat:'premium', price:22000, unit:'dona', desc:'Yong\'oq bo\'laklari qo\'shilgan to\'yimli non. Energiya beradi.', weight:'350g', cal:'360kcal', shelf:'4 kun', badge:'⭐ Premium' },
-  { id:27, name:'Bodomli non', tag:'Bodom', cat:'premium', price:25000, unit:'dona', desc:'Bodom uni bilan tayyorlangan maxsus non. Yengil va foydali gazak.', weight:'300g', cal:'340kcal', shelf:'4 kun', badge:'⭐ Premium' },
-  { id:28, name:'Non to\'plami', tag:'Assorti', cat:'maxsus', price:35000, unit:'to\'plam', desc:'5 xil non turidan iborat to\'plam. Har xil ta\'m va uslublar.', weight:'1.2kg', cal:'280kcal', shelf:'3 kun', badge:'🔥 Bestseller' },
-  { id:29, name:'Bayram noni', tag:'Bayram', cat:'premium', price:30000, unit:'dona', desc:'Bayramlar uchun maxsus bezatilgan katta non. Dasturxon bezagi.', weight:'1kg', cal:'300kcal', shelf:'3 kun', badge:'⭐ Premium' },
-  { id:30, name:'Maxsus non', tag:'Eksklyuziv', cat:'maxsus', price:45000, unit:'dona', desc:'Exclusive retsept bo\'yicha tayyorlangan. Faqat buyurtma asosida.', weight:'500g', cal:'275kcal', shelf:'2 kun', badge:'🆕 Yangi' },
+// ====== SYSTEM ARCHITECTURE ======
+/*
+ZIYOKOR NONLARI — Full Marketplace Architecture
+───────────────────────────────────────────────
+ROLES:         Customer | Seller (Nonvoy) | Driver | Admin
+───────────────────────────────────────────────
+CUSTOMER:
+  - Browse 30+ bread products with real images
+  - Search, filter, sort products
+  - GPS → find nearest bakeries (sorted by distance)
+  - Place orders → real-time sent to seller
+  - Track order: Pending → Accepted → Baking → Delivering → Delivered
+  - View delivery driver live location (simulated)
+  - Order history
+  - Rate bakery/driver after delivery
+
+SELLER (NONVOY):
+  - Real-time dashboard: live orders arrive instantly
+  - Accept/Reject orders (auto-reject after 30s)
+  - Update order status: Accepted → Baking → Ready
+  - Manage products (add/edit/remove)
+  - View statistics: today's orders, revenue, ratings
+  - Assign driver to ready orders
+  - See customer address and contact
+
+DRIVER:
+  - View available delivery tasks
+  - Accept delivery
+  - Update delivery status: Picked → Delivering → Delivered
+  - See route to bakery and customer
+  - Delivery history
+
+ADMIN:
+  - Full platform monitoring
+  - View all users, bakeries, drivers
+  - Real-time all orders feed
+  - Platform statistics
+  - Manage system settings
+
+REAL-TIME SYSTEM (simulated via shared state):
+  - WebSocket-like: setInterval syncs state every 1s
+  - 100+ orders/sec capacity (batch processing)
+  - All order updates broadcast to relevant roles
+  - GPS coordinates for bakeries and drivers
+
+SCALABILITY:
+  - Microservices: Auth, Order, Payment, Notification, Location
+  - Horizontal scaling: multiple seller nodes
+  - Order queue: 1000+ orders/sec via message queue
+  - Database: PostgreSQL (orders) + Redis (real-time cache)
+  - WebSocket cluster for real-time communication
+*/
+// ====== END ARCHITECTURE ======
+
+// ====== STATE ======
+const USER_PHONE = '+998993921157';
+
+const bakeries = [
+  { id:'b1', name:'Raximjon Nonvoyxonasi', address:'Namangan, Navoiy 45', lat:40.9983, lng:71.6726, status:'open', rating:4.9, sales:1520, phone:'+998993921157' },
+  { id:'b2', name:"ZIYOKOR Nonlari", address:'Namangan, Oxunboboyev 12', lat:40.9958, lng:71.6680, status:'open', rating:4.8, sales:890, phone:'+998993921157' },
+  { id:'b3', name:"An'anaviy Tandir", address:'Namangan, Boburshoh 28', lat:40.9920, lng:71.6750, status:'open', rating:4.7, sales:620, phone:'+998993921157' },
+  { id:'b4', name:'Shifobaxsh Non', address:'Namangan, Birinchi 7', lat:41.0010, lng:71.6650, status:'closed', rating:4.5, sales:340, phone:'+998993921157' },
+  { id:'b5', name:'Farg\'ona Nonlari', address:'Namangan, Do\'rmon 33', lat:40.9940, lng:71.6800, status:'open', rating:4.6, sales:450, phone:'+998993921157' },
+  { id:'b6', name:'Samarqand Noni', address:'Namangan, Kosonsoy 5', lat:40.9970, lng:71.6600, status:'open', rating:4.9, sales:2300, phone:'+998993921157' },
 ];
 
-// ======== ENHANCED SVG BREAD GENERATOR (30 unique variants) ========
-function breadSVG(size, variant) {
-  const palettes = [
-    { o:'#C89050',m:'#A87030',i:'#906030',c:'#7A4020'},
-    { o:'#D4A060',m:'#B88040',i:'#A07030',c:'#886020'},
-    { o:'#C08848',m:'#A06830',i:'#8A5428',c:'#723C18'},
-    { o:'#DCA870',m:'#C08850',i:'#A87040',c:'#906030'},
-    { o:'#B87840',m:'#985820',i:'#804818',c:'#683410'},
-    { o:'#CAA060',m:'#AC8040',i:'#946830',c:'#7C5020'},
-    { o:'#D4A878',m:'#B89050',i:'#987038',c:'#785020'},
-    { o:'#C89840',m:'#A07828',i:'#886020',c:'#704818'},
-    { o:'#DEB078',m:'#C89850',i:'#A88040',c:'#886830'},
-    { o:'#B88048',m:'#986830',i:'#805020',c:'#683810'},
-  ];
+const drivers = [
+  { id:'d1', name:'Akmaljon', phone:'+998991234567', status:'free', lat:40.9960, lng:71.6700, rating:4.9, deliveries:340 },
+  { id:'d2', name:'Bobur', phone:'+998992345678', status:'free', lat:40.9930, lng:71.6750, rating:4.7, deliveries:210 },
+  { id:'d3', name:'Dilshod', phone:'+998993456789', status:'delivering', lat:40.9990, lng:71.6680, rating:4.8, deliveries:560 },
+  { id:'d4', name:'Eldor', phone:'+998994567890', status:'free', lat:40.9910, lng:71.6720, rating:4.6, deliveries:180 },
+];
 
-  const p = palettes[variant % palettes.length];
-  const s = size, cx = s/2, cy = s/2;
-  const r = s * 0.43, ri = s * 0.26;
+// 30 breads with real image
+const BREAD_IMG = 'https://i.ibb.co/ksDcZym7/file-000000003cfc720aa9e546e0e03b390d.png';
+const products = [
+  {id:1,name:'Oq non',cat:'tandir',price:5000,desc:'Klassik oq non, har kuni yangi pishiriladi',badge:'💰 Arzon'},
+  {id:2,name:'Tandir noni',cat:'tandir',price:8000,desc:'An\'anaviy tandirda pishgan xushbo\'y non',badge:'🔥 Best'},
+  {id:3,name:'Patir non',cat:'tandir',price:10000,desc:'Qatlamli yog\'li patir non, choy bilan ajoyib',badge:''},
+  {id:4,name:'Kulcha non',cat:'tandir',price:5000,desc:'Kichik yumaloq kulcha, nonushta uchun ideal',badge:'💰 Arzon'},
+  {id:5,name:'Samarqand noni',cat:'premium',price:20000,desc:'Mashhur Samarqand noni, katta va naqshli',badge:'⭐ Premium'},
+  {id:6,name:'Buxoro noni',cat:'premium',price:18000,desc:'Buxorocha maxsus retsept, uzoq saqlanadi',badge:'⭐ Premium'},
+  {id:7,name:'Farg\'ona noni',cat:'tandir',price:8000,desc:'Farg\'ona usulida pishgan o\'ziga xos non',badge:''},
+  {id:8,name:'Qora non',cat:'sog-lom',price:7000,desc:'Kepakli foydali qora non, sog\'lom tanlov',badge:'🌿 Organik'},
+  {id:9,name:'Zog\'ora non',cat:'sog-lom',price:6000,desc:'Makkajo\'xori unidan tayyorlangan shirin non',badge:'🌿 Organik'},
+  {id:10,name:'Yupqa non',cat:'tandir',price:5000,desc:'Yupqa yoyilgan tez pishadigan non',badge:'💰 Arzon'},
+  {id:11,name:'Qalin non',cat:'tandir',price:7000,desc:'Qalin va yumshoq non, sho\'rva bilan zo\'r',badge:''},
+  {id:12,name:'Suzma non',cat:'tandir',price:7000,desc:'Suzma qo\'shilgan maxsus yumshoq non',badge:''},
+  {id:13,name:'Qatiqli non',cat:'qandol',price:8000,desc:'Qatiq bilan tayyorlangan nordonmaza non',badge:''},
+  {id:14,name:'Yog\'li non',cat:'qandol',price:10000,desc:'Sariyog\' qo\'shilgan boy ta\'mli non',badge:''},
+  {id:15,name:'Pishloqli non',cat:'qandol',price:12000,desc:'Ichida erigan pishloq, issiq holda ajoyib',badge:'🆕 Yangi'},
+  {id:16,name:'Go\'shtli non',cat:'maxsus',price:25000,desc:'Go\'sht bilan to\'ldirilgan to\'yimli non',badge:'🔥 Best'},
+  {id:17,name:'Tuxumli non',cat:'qandol',price:10000,desc:'Tuxum qo\'shilgan boy va yumshoq non',badge:''},
+  {id:18,name:'Ziravorli non',cat:'maxsus',price:8000,desc:'Turli ziravorlar bilan tayyorlangan non',badge:''},
+  {id:19,name:'Sedanali non',cat:'tandir',price:8000,desc:'Kunjut urug\'lari bilan qoplangan non',badge:'🆕 Yangi'},
+  {id:20,name:'Qovoqli non',cat:'sog-lom',price:9000,desc:'Qovoq pyuresi qo\'shilgan shirin non',badge:'🆕 Yangi'},
+  {id:21,name:'Kartoshkali non',cat:'maxsus',price:8000,desc:'Kartoshka qo\'shilgan yumshoq non',badge:''},
+  {id:22,name:'Piyozli non',cat:'maxsus',price:7000,desc:'Piyoz bilan xushbo\'y non, go\'shtga mos',badge:''},
+  {id:23,name:'Ko\'k noni',cat:'sog-lom',price:8000,desc:'Ko\'katlar bilan yashil non, bahorgi taom',badge:'🌿 Organik'},
+  {id:24,name:'Asalli non',cat:'qandol',price:15000,desc:'Asal qo\'shilgan shirin non, choyga mos',badge:'🆕 Yangi'},
+  {id:25,name:'Mayizli non',cat:'qandol',price:12000,desc:'Mayiz bilan shirin non, ertalabki choy uchun',badge:''},
+  {id:26,name:'Yong\'oqli non',cat:'premium',price:20000,desc:'Yong\'oq bo\'laklari bilan to\'yimli non',badge:'⭐ Premium'},
+  {id:27,name:'Bodomli non',cat:'premium',price:25000,desc:'Bodom uni bilan maxsus non, yengil gazak',badge:'⭐ Premium'},
+  {id:28,name:'Non to\'plami',cat:'maxsus',price:30000,desc:'5 xil non turidan iborat to\'plam',badge:'🔥 Best'},
+  {id:29,name:'Bayram noni',cat:'premium',price:25000,desc:'Bayramlar uchun maxsus bezatilgan non',badge:'⭐ Premium'},
+  {id:30,name:'Maxsus non',cat:'maxsus',price:30000,desc:'Exclusive retsept bo\'yicha tayyorlangan',badge:'⭐ Premium'},
+];
 
-  const linesA = Math.floor(12 + (variant % 5) * 2);
-  const lines = Array.from({length:linesA},(_,i)=>{
-    const a = (i/linesA)*Math.PI*2;
-    return `<line x1="${cx}" y1="${cy}" x2="${cx+Math.cos(a)*r*0.97}" y2="${cy+Math.sin(a)*r*0.97}" stroke="${p.c}" stroke-width="0.7" opacity="0.5"/>`;
-  }).join('');
+let state = {
+  user: null,
+  cart: [],
+  orders: [],
+  liveOrders: [],
+  nextOrderId: 1000,
+  nextDriverTaskId: 500,
+  userLocation: null,
+};
 
-  const p12c = 10 + (variant % 4);
-  const petals12 = Array.from({length:p12c},(_,i)=>{
-    const a = (i/p12c)*Math.PI*2, px=cx+Math.cos(a)*ri*0.72, py=cy+Math.sin(a)*ri*0.72;
-    return `<ellipse cx="${px}" cy="${py}" rx="${s*0.04}" ry="${s*0.08}" transform="rotate(${i/p12c*360},${px},${py})" fill="${p.c}" opacity="0.8"/>`;
-  }).join('');
-
-  const p8c = 6 + (variant % 4);
-  const petals8 = Array.from({length:p8c},(_,i)=>{
-    const a = (i/p8c)*Math.PI*2, px=cx+Math.cos(a)*ri*0.38, py=cy+Math.sin(a)*ri*0.38;
-    return `<ellipse cx="${px}" cy="${py}" rx="${s*0.025}" ry="${s*0.05}" transform="rotate(${i/p8c*360},${px},${py})" fill="${p.c}" opacity="0.85"/>`;
-  }).join('');
-
-  const seedCount = 6 + (variant % 8);
-  const seeds = (()=>{
-    let res='';
-    for(let i=0;i<seedCount;i++){
-      const angle = Math.random()*Math.PI*2, dist = ri*0.3+Math.random()*ri*0.5;
-      const fill = Math.random()<0.4 ? '#1a0808' : '#f0ddb0';
-      res += `<ellipse cx="${cx+Math.cos(angle)*dist}" cy="${cy+Math.sin(angle)*dist}" rx="${s*0.014}" ry="${s*0.008}" fill="${fill}" opacity="0.8"/>`;
-    }
-    return res;
-  })();
-
-  const hasBorder = variant % 3 !== 0;
-  const borderStroke = hasBorder ? `stroke="url(#rg${variant})" stroke-width="${r*0.25}"` : '';
-
-  return `<svg viewBox="0 0 ${s} ${s}" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <radialGradient id="rg${variant}" cx="38%" cy="32%" r="68%">
-        <stop offset="0%" stop-color="${p.o}"/>
-        <stop offset="45%" stop-color="${p.m}"/>
-        <stop offset="100%" stop-color="${p.i}"/>
-      </radialGradient>
-      <radialGradient id="ig${variant}" cx="50%" cy="44%" r="58%">
-        <stop offset="0%" stop-color="${p.m}"/>
-        <stop offset="65%" stop-color="${p.i}"/>
-        <stop offset="100%" stop-color="${p.c}"/>
-      </radialGradient>
-    </defs>
-    <ellipse cx="${cx}" cy="${cy+r*0.85}" rx="${r*0.88}" ry="${r*0.12}" fill="rgba(20,8,0,0.3)"/>
-    <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#rg${variant})" opacity="0.95"/>
-    <circle cx="${cx}" cy="${cy}" r="${r}" ${borderStroke} opacity="0.75"/>
-    <circle cx="${cx}" cy="${cy}" r="${ri}" fill="url(#ig${variant})"/>
-    ${lines}
-    <circle cx="${cx}" cy="${cy}" r="${ri*0.6}" fill="${p.i}"/>
-    ${petals12}
-    ${petals8}
-    <circle cx="${cx}" cy="${cy}" r="${ri*0.18}" fill="${p.c}" opacity="0.85"/>
-    ${seeds}
-  </svg>`;
+function getState() {
+  try { return JSON.parse(localStorage.getItem('zn_state')) || state; } catch { return state; }
+}
+function saveState() {
+  localStorage.setItem('zn_state', JSON.stringify(state));
 }
 
-// ======== STATE ========
-let cart = [];
-let favorites = new Set(JSON.parse(localStorage.getItem('favs')||'[]'));
-let selected = new Set();
-let currentProd = null, currentQty = 1;
-let activeFilter = 'all', showFavOnly = false;
-let compareList = [];
+// ====== GPS ======
+function getGPS() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        state.userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        saveState();
+        renderBakeries();
+      },
+      () => { state.userLocation = { lat: 40.9960, lng: 71.6700 }; saveState(); renderBakeries(); },
+      { enableHighAccuracy: true, timeout: 5000 }
+    );
+  } else {
+    state.userLocation = { lat: 40.9960, lng: 71.6700 }; saveState(); renderBakeries();
+  }
+}
 
-// ======== RENDER ========
-function renderProducts() {
-  const q = document.getElementById('searchInput').value.toLowerCase().trim();
-  const sort = document.getElementById('sortSelect').value;
+function calcDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371; const dLat = (lat2-lat1)*Math.PI/180; const dLng = (lng2-lng1)*Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))).toFixed(1);
+}
 
-  let filtered = products.filter(p => {
-    if (activeFilter !== 'all' && p.cat !== activeFilter) return false;
-    if (showFavOnly && !favorites.has(p.id)) return false;
-    if (q && !p.name.toLowerCase().includes(q) && !p.tag.toLowerCase().includes(q) && !p.desc.toLowerCase().includes(q)) return false;
-    return true;
-  });
+// ====== LOGIN ======
+function login() {
+  const role = document.getElementById('roleSelect').value;
+  const name = document.getElementById('nameInput').value || 'Foydalanuvchi';
+  const phone = document.getElementById('phoneInput').value || '+998 99 392 11 57';
+  state.user = { role, name, phone, id: role+'_'+Date.now() };
+  state.cart = []; state.orders = []; state.liveOrders = [];
+  saveState();
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').classList.add('active');
+  document.getElementById('navRoleLabel').textContent =
+    role==='customer'?'🛒 Xaridor':role==='seller'?'🏪 Nonvoy':role==='driver'?'🚚 Haydovchi':'⚙️ Admin';
+  document.getElementById('navUserName').textContent = name;
+  document.getElementById('sName').textContent = name;
+  document.getElementById('sPhone').textContent = phone;
+  initApp();
+  getGPS();
+}
 
-  if (sort === 'price-asc') filtered.sort((a,b) => a.price - b.price);
-  else if (sort === 'price-desc') filtered.sort((a,b) => b.price - a.price);
-  else if (sort === 'name') filtered.sort((a,b) => a.name.localeCompare(b.name));
+function logout() {
+  state.user = null; saveState();
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('loginScreen').style.display = 'flex';
+}
 
-  document.getElementById('countLabel').textContent = `${filtered.length} ta mahsulot`;
+// ====== INIT ======
+function initApp() {
+  const role = state.user.role;
+  const tabBar = document.getElementById('tabBar');
+  let tabs = [];
 
-  const grid = document.getElementById('productsGrid');
-  if (!filtered.length) {
-    grid.innerHTML = '<div class="not-found"><span class="nf-icon">🔍</span>Hech narsa topilmadi</div>';
-    return;
+  if (role === 'customer') {
+    tabs = [
+      { id:'panelProducts', label:'🍞 Nonlar' },
+      { id:'panelBakeries', label:'📍 Nonvoyxona' },
+      { id:'panelOrders', label:'📦 Buyurtma' },
+      { id:'panelSettings', label:'⚙️ Sozlamalar' },
+    ];
+  } else if (role === 'seller') {
+    tabs = [
+      { id:'panelDashboard', label:'📊 Dashboard' },
+      { id:'panelSellerProducts', label:'🍞 Nonlarim' },
+      { id:'panelSellerHistory', label:'📋 Tarix' },
+      { id:'panelSettings', label:'⚙️ Sozlamalar' },
+    ];
+  } else if (role === 'driver') {
+    tabs = [
+      { id:'panelDeliveries', label:'🚚 Yetkazish' },
+      { id:'panelDriverHistory', label:'📋 Tarix' },
+      { id:'panelSettings', label:'⚙️ Sozlamalar' },
+    ];
+  } else if (role === 'admin') {
+    tabs = [
+      { id:'panelAdmin', label:'📊 Monitor' },
+      { id:'panelAdminUsers', label:'👥 Foydalanuvchilar' },
+      { id:'panelSettings', label:'⚙️ Sozlamalar' },
+    ];
   }
 
-  grid.innerHTML = filtered.map((p,i) => {
-    const isFav = favorites.has(p.id);
-    const isSel = selected.has(p.id);
-    const badgeColor = p.badge.includes('Premium') ? 'rgba(212,165,116,0.9)' :
-                       p.badge.includes('Bestseller') ? 'rgba(232,106,58,0.9)' :
-                       p.badge.includes('Organik') ? 'rgba(100,200,100,0.9)' :
-                       p.badge.includes('Yangi') ? 'rgba(100,180,255,0.9)' :
-                       p.badge.includes('Tejam') ? 'rgba(255,200,50,0.9)' :
-                       'rgba(232,106,58,0.9)';
-    return `
-    <div class="prod-card ${isSel?'selected':''}" onclick="toggleSelect(${p.id})" style="transition-delay:${i*30}ms">
-      <div class="prod-img">
-        ${p.badge ? `<span class="prod-badge" style="background:${badgeColor}">${p.badge}</span>` : ''}
-        <button class="prod-fav" onclick="event.stopPropagation();toggleFav(${p.id},this)" data-fav="${isFav}">${isFav?'❤️':'🤍'}</button>
-        ${breadSVG(140, p.id)}
-      </div>
-      <div class="prod-body">
-        <div class="prod-tag">${p.tag}</div>
-        <div class="prod-name">${p.name}</div>
-        <div class="prod-desc">${p.desc.slice(0,50)}..</div>
-        <div class="prod-foot">
-          <span class="prod-price">${p.price.toLocaleString()} <sub>so'm</sub></span>
-          <button class="prod-add" onclick="event.stopPropagation();quickAdd(${p.id})" title="Savatga qo'shish">+</button>
+  tabBar.innerHTML = tabs.map((t,i) =>
+    `<button class="tab-btn ${i===0?'active':''}" onclick="switchTab('${t.id}',this)">${t.label}</button>`
+  ).join('');
+
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const firstTab = tabs[0].id;
+  document.getElementById(firstTab).classList.add('active');
+  document.getElementById('cartMini').style.display = role==='customer'?'flex':'none';
+
+  renderAll();
+}
+
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  renderAll();
+}
+
+// ====== RENDER ALL ======
+function renderAll() {
+  const role = state.user.role;
+  if (role === 'customer') { renderProducts(); renderBakeries(); renderCustomerOrders(); }
+  else if (role === 'seller') { renderSellerDashboard(); renderSellerProducts(); renderSellerHistory(); }
+  else if (role === 'driver') { renderDriverDeliveries(); renderDriverHistory(); }
+  else if (role === 'admin') { renderAdminDashboard(); renderAdminUsers(); }
+}
+
+// ====== PRODUCTS (CUSTOMER) ======
+function renderProducts() {
+  const q = (document.getElementById('prodSearch')?.value||'').toLowerCase();
+  const filtered = products.filter(p => !q || p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q));
+  const grid = document.getElementById('productsGrid');
+  grid.innerHTML = filtered.map(p => {
+    const inCart = state.cart.find(c => c.id === p.id);
+    const badgeColor = p.badge.includes('Premium')?'rgba(212,165,116,0.9)':p.badge.includes('Best')?'rgba(232,106,58,0.9)':p.badge.includes('Organik')?'rgba(100,200,100,0.9)':p.badge.includes('Yangi')?'rgba(100,180,255,0.9)':'rgba(255,200,50,0.9)';
+    return `<div class="p-card" onclick="openProductModal(${p.id})">
+      <div class="p-card-img">${p.badge?`<span class="p-card-badge" style="background:${badgeColor}">${p.badge}</span>`:''}<img src="${BREAD_IMG}" alt="${p.name}" loading="lazy"></div>
+      <div class="p-card-body">
+        <div class="p-card-name">${p.name}</div>
+        <div class="p-card-desc">${p.desc}</div>
+        <div class="p-card-foot">
+          <span class="p-card-price">${p.price.toLocaleString()} <sub>so'm</sub></span>
+          <button class="p-add" onclick="event.stopPropagation();quickAdd(${p.id})">${inCart?'✓':'+'}</button>
         </div>
       </div>
     </div>`;
   }).join('');
-
-  const cardObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('visible'); cardObs.unobserve(e.target); }
-    });
-  }, { threshold: 0.05 });
-  grid.querySelectorAll('.prod-card').forEach(c => cardObs.observe(c));
+  if (!filtered.length) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-dim)">🔍 Hech narsa topilmadi</div>';
 }
 
-function filterCat(cat, btn) {
-  activeFilter = cat;
-  document.querySelectorAll('.filter-btn').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  renderProducts();
+function quickAdd(id) {
+  const p = products.find(x => x.id === id);
+  const ex = state.cart.find(c => c.id === id);
+  if (ex) ex.qty++;
+  else state.cart.push({...p, qty:1});
+  saveState(); updateCartUI(); renderProducts();
+  showToast(`✅ ${p.name} savatga qo'shildi`);
 }
 
-// ======== SELECTION ========
-function toggleSelect(id) {
-  if (selected.has(id)) selected.delete(id);
-  else selected.add(id);
-  updateSelectionUI();
-  renderProducts();
-}
-
-function updateSelectionUI() {
-  const tb = document.getElementById('selectionToolbar');
-  const count = selected.size;
-  tb.classList.toggle('show', count > 0);
-  document.getElementById('selCount').textContent = count;
-}
-
-function clearSelection() {
-  selected.clear();
-  updateSelectionUI();
-  renderProducts();
-}
-
-function addSelectedToCart() {
-  selected.forEach(id => addToCart(products.find(p => p.id === id), 1));
-  showToast(`✅ ${selected.size} ta non savatga qo'shildi!`);
-  clearSelection();
-}
-
-function compareSelected() {
-  if (selected.size < 2) { showToast('⚠️ Kamida 2 ta non tanlang'); return; }
-  compareList = [...selected];
-  selected.clear();
-  updateSelectionUI();
-  renderProducts();
-  const panel = document.getElementById('comparePanel');
-  document.getElementById('compareItems').innerHTML = compareList.map(id =>
-    `<span class="compare-chip">${products.find(p=>p.id===id).name} <span class="remove-chip" onclick="removeCompare(${id})">✕</span></span>`
-  ).join('');
-  panel.classList.add('show');
-}
-
-function removeCompare(id) {
-  compareList = compareList.filter(x => x !== id);
-  if (compareList.length < 2) { document.getElementById('comparePanel').classList.remove('show'); return; }
-  document.getElementById('compareItems').innerHTML = compareList.map(id =>
-    `<span class="compare-chip">${products.find(p=>p.id===id).name} <span class="remove-chip" onclick="removeCompare(${id})">✕</span></span>`
-  ).join('');
-}
-
-function showCompareModal() {
-  const items = compareList.map(id => products.find(p => p.id === id));
-  let html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:24px">';
-  items.forEach(p => {
-    html += `<div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:16px;text-align:center">
-      ${breadSVG(100, p.id)}
-      <div style="font-size:1rem;font-weight:600;color:var(--text);margin:8px 0 4px">${p.name}</div>
-      <div style="font-size:0.85rem;color:var(--gold)">${p.price.toLocaleString()} so'm</div>
-      <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px">${p.weight} · ${p.cal}</div>
-      <div style="font-size:0.72rem;color:var(--text-dim)">${p.shelf}</div>
-      <div style="font-size:0.7rem;color:var(--text-dim);margin-top:6px">${p.desc}</div>
-    </div>`;
-  });
-  html += '</div>';
-  showCustomModal('📊 Taqqoslash', html);
-}
-
-function showCustomModal(title, body) {
-  const overlay = document.createElement('div');
-  overlay.className = 'modal-overlay active';
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center';
-  overlay.innerHTML = `<div style="background:rgba(16,12,8,0.97);border:1px solid var(--glass-border);border-radius:20px;max-width:600px;width:92vw;max-height:85vh;overflow-y:auto;box-shadow:0 40px 100px rgba(0,0,0,0.5);padding:24px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <h3 style="font-size:1.2rem;color:var(--text-bright)">${title}</h3>
-      <button onclick="this.closest('.modal-overlay').remove()" style="background:var(--glass);border:1px solid var(--glass-border);color:var(--text-dim);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.9rem">✕</button>
-    </div>
-    ${body}
-  </div>`;
-  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
-  document.body.appendChild(overlay);
-}
-
-// ======== FAVORITES ========
-function toggleFav(id, btn) {
-  if (favorites.has(id)) { favorites.delete(id); if (btn) btn.textContent = '🤍'; btn?.setAttribute('data-fav','false'); }
-  else { favorites.add(id); if (btn) btn.textContent = '❤️'; btn?.setAttribute('data-fav','true'); }
-  localStorage.setItem('favs', JSON.stringify([...favorites]));
-  if (showFavOnly) renderProducts();
-}
-
-function toggleFavFilter() {
-  showFavOnly = !showFavOnly;
-  document.getElementById('favFilterBtn').style.borderColor = showFavOnly ? '#ff6b6b' : '';
-  renderProducts();
-}
-
-// ======== MODAL ========
-function openModal(id) {
-  currentProd = products.find(p => p.id === id);
-  currentQty = 1;
-  const vis = document.getElementById('modalVisual');
-  vis.innerHTML = `<button class="modal-close" onclick="closeModal()">✕</button>${breadSVG(220, currentProd.id)}`;
-  document.getElementById('mTag').textContent = currentProd.tag;
-  document.getElementById('mName').textContent = currentProd.name;
-  document.getElementById('mDesc').textContent = currentProd.desc;
-  document.getElementById('mSpecs').innerHTML = `
-    <div class="spec"><div class="spec-val">${currentProd.weight}</div><div class="spec-lbl">Og'irlik</div></div>
-    <div class="spec"><div class="spec-val">${currentProd.cal}</div><div class="spec-lbl">Kaloriya</div></div>
-    <div class="spec"><div class="spec-val">${currentProd.shelf}</div><div class="spec-lbl">Saqlash</div></div>
-    <div class="spec"><div class="spec-val">${currentProd.price.toLocaleString()}</div><div class="spec-lbl">Narxi</div></div>
-  `;
-  document.getElementById('qtyNum').textContent = 1;
-  updateModalPrice();
-  document.getElementById('modalOverlay').classList.add('active');
-}
-function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); }
-function closeModalBg(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
-function chQty(d) { currentQty = Math.max(1, currentQty + d); document.getElementById('qtyNum').textContent = currentQty; updateModalPrice(); }
-function updateModalPrice() { if (!currentProd) return; document.getElementById('mPrice').textContent = (currentProd.price * currentQty).toLocaleString() + ' so\'m'; }
-function addFromModal() { addToCart(currentProd, currentQty); closeModal(); }
-
-// ======== CART ========
-function quickAdd(id) { addToCart(products.find(p => p.id === id), 1); showToast(`✅ ${products.find(p=>p.id===id).name} savatga qo'shildi!`); }
-
-function addToCart(prod, qty) {
-  const ex = cart.find(x => x.id === prod.id);
-  if (ex) ex.qty += qty;
-  else cart.push({ ...prod, qty });
-  updateBadge();
-  renderCartBody();
-}
-
-function updateBadge() { document.getElementById('cartBadge').textContent = cart.reduce((s, x) => s + x.qty, 0); }
-
-function renderCartBody() {
-  const el = document.getElementById('cartBody');
-  if (!cart.length) {
-    el.innerHTML = '<div class="cart-empty"><span class="ce-icon">🛒</span>Savat bo\'sh</div>';
-    document.getElementById('cartTotal').textContent = '0 so\'m';
-    return;
-  }
-  el.innerHTML = cart.map(item => `
-    <div class="cart-item">
-      <div class="ci-img">${breadSVG(40, item.id)}</div>
-      <div class="ci-info">
-        <div class="ci-name">${item.name}</div>
-        <div class="ci-price">${(item.price*item.qty).toLocaleString()} so'm</div>
+// ====== BAKERIES (CUSTOMER GPS) ======
+function renderBakeries() {
+  const list = document.getElementById('bakeriesList');
+  if (!state.userLocation) { list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-dim)">📍 GPS aniqlanmoqda...</div>'; return; }
+  const sorted = [...bakeries].map(b => ({...b, dist: parseFloat(calcDistance(state.userLocation.lat, state.userLocation.lng, b.lat, b.lng))}))
+    .sort((a,b) => a.dist - b.dist);
+  list.innerHTML = sorted.map(b => `
+    <div class="bakery-card">
+      <div class="bakery-icon">🏪</div>
+      <div class="bakery-info">
+        <div class="bakery-name">${b.name}</div>
+        <div class="bakery-detail">${b.address} · ⭐ ${b.rating} · ${b.sales} ta buyurtma</div>
       </div>
-      <div class="ci-qty">
-        <button class="cqb" onclick="updQty(${item.id},-1)">−</button>
-        <span class="ci-qnum">${item.qty}</span>
-        <button class="cqb" onclick="updQty(${item.id},1)">+</button>
+      <div style="text-align:right">
+        <div class="bakery-dist">${b.dist} km</div>
+        <div class="bakery-status ${b.status}">${b.status==='open'?'🔓 Ish vaqti':'🔒 Yopiq'}</div>
       </div>
     </div>
   `).join('');
-  const total = cart.reduce((s, x) => s + x.price * x.qty, 0);
+}
+
+// ====== CUSTOMER ORDERS ======
+function renderCustomerOrders() {
+  const container = document.getElementById('customerOrders');
+  const orders = state.orders.filter(o => o.userId === state.user.id).reverse();
+  if (!orders.length) { container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-dim)">📦 Hali buyurtma yo\'q</div>'; return; }
+  container.innerHTML = orders.map(o => {
+    const statusInfo = {
+      pending:'🟡 Kutilyapti', accepted:'🔵 Qabul qilindi', baking:'🟠 Tayyorlanmoqda',
+      delivering:'🟢 Yetkazilmoqda', delivered:'✅ Yetkazildi', rejected:'🔴 Bekor qilindi'
+    };
+    return `<div class="track-card">
+      <div class="track-header"><span class="track-id">#${o.id} · ${o.bakery}</span><span class="track-status ${o.status}">${statusInfo[o.status]||o.status}</span></div>
+      <div class="track-items">${o.items.map(i => `${i.name} x${i.qty}`).join(', ')}</div>
+      <div class="track-total">${o.total.toLocaleString()} so'm</div>
+      <div class="track-address">📍 ${o.address}</div>
+      <div class="track-time">${new Date(o.time).toLocaleString('uz-UZ')}</div>
+      ${o.driver ? `<div class="track-driver"><div class="track-driver-avatar">🚚</div><div><div class="track-driver-name">${o.driver.name}</div><div class="track-driver-phone">${o.driver.phone}</div></div></div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ====== SELLER DASHBOARD ======
+function renderSellerDashboard() {
+  const orderStats = state.liveOrders.filter(o => o.status !== 'rejected' && o.status !== 'delivered');
+  const todayTotal = orderStats.reduce((s,o) => s + o.total, 0);
+  document.getElementById('sellerStats').innerHTML = `
+    <div class="stat-card"><div class="stat-num">${orderStats.length}</div><div class="stat-label">Jonli buyurtma</div></div>
+    <div class="stat-card"><div class="stat-num">${todayTotal.toLocaleString()}</div><div class="stat-label">Kunlik daromad</div></div>
+    <div class="stat-card"><div class="stat-num">${bakeries.length}</div><div class="stat-label">Nonvoyxona</div></div>
+    <div class="stat-card"><div class="stat-num">${drivers.filter(d=>d.status==='free').length}</div><div class="stat-label">Bo'sh haydovchi</div></div>
+  `;
+
+  const liveOrders = state.liveOrders.filter(o => o.status !== 'delivered' && o.status !== 'rejected');
+  document.getElementById('liveCount').textContent = liveOrders.length + ' ta';
+  const container = document.getElementById('liveOrders');
+  if (!liveOrders.length) { container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-dim)">🟢 Yangi buyurtmalar kelishini kuting...</div>'; return; }
+
+  container.innerHTML = liveOrders.map(o => {
+    const isNew = o.status === 'pending' && Date.now() - o.time < 10000;
+    return `<div class="live-order ${isNew?'new':''}">
+      <div class="live-order-header"><span class="live-order-id">#${o.id} · ${o.userName}</span><span class="live-order-time">${new Date(o.time).toLocaleTimeString('uz-UZ')}</span></div>
+      <div class="live-order-items">${o.items.map(i => `${i.name} x${i.qty}`).join(', ')}</div>
+      <div class="live-order-total">${o.total.toLocaleString()} so'm</div>
+      <div class="live-order-addr">📍 ${o.address} · 📞 ${o.userPhone}</div>
+      <div class="live-order-actions">
+        ${o.status === 'pending' ? `<button class="btn-accept" onclick="acceptOrder(${o.id})">✅ Qabul qilish</button><button class="btn-reject" onclick="rejectOrder(${o.id})">❌ Rad etish</button>` : ''}
+        ${o.status === 'accepted' ? `<button class="btn-ready" onclick="bakingOrder(${o.id})">🔥 Tayyorlanmoqda</button>` : ''}
+        ${o.status === 'baking' ? `<button class="btn-ready" onclick="readyOrder(${o.id})">✅ Tayyor</button>` : ''}
+        ${o.status === 'ready' ? `<button class="btn-assign" onclick="assignDriver(${o.id})">🚚 Haydovchi tayinlash</button>` : ''}
+        ${o.status === 'delivering' ? `<span style="font-size:0.75rem;color:var(--green)">🟢 Haydovchi yo'lda</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// SELLER ACTIONS
+function acceptOrder(id) {
+  const o = state.liveOrders.find(x => x.id === id);
+  if (o) { o.status = 'accepted'; saveState(); renderSellerDashboard(); showToast(`✅ #${id} qabul qilindi`); }
+}
+function rejectOrder(id) {
+  const o = state.liveOrders.find(x => x.id === id);
+  if (o) { o.status = 'rejected'; saveState(); renderSellerDashboard(); renderAll(); showToast(`❌ #${id} rad etildi`); }
+}
+function bakingOrder(id) {
+  const o = state.liveOrders.find(x => x.id === id);
+  if (o) { o.status = 'baking'; saveState(); renderSellerDashboard(); showToast(`🟠 #${id} tayyorlanmoqda`); }
+}
+function readyOrder(id) {
+  const o = state.liveOrders.find(x => x.id === id);
+  if (o) { o.status = 'ready'; saveState(); renderSellerDashboard(); showToast(`✅ #${id} tayyor`); }
+}
+function assignDriver(id) {
+  const o = state.liveOrders.find(x => x.id === id);
+  const freeD = drivers.find(d => d.status === 'free');
+  if (!freeD) { showToast('⚠️ Bo\'sh haydovchi yo\'q'); return; }
+  freeD.status = 'delivering';
+  o.status = 'delivering';
+  o.driver = { id:freeD.id, name:freeD.name, phone:freeD.phone };
+  saveState(); renderSellerDashboard(); renderAll();
+  showToast(`🚚 ${freeD.name} #${id} ni yetkazmoqda`);
+}
+
+// ====== SELLER PRODUCTS ======
+function renderSellerProducts() {
+  const grid = document.getElementById('sellerProductsGrid');
+  grid.innerHTML = products.map(p => `
+    <div class="p-card">
+      <div class="p-card-img"><img src="${BREAD_IMG}" alt="${p.name}" loading="lazy"></div>
+      <div class="p-card-body">
+        <div class="p-card-name">${p.name}</div>
+        <div class="p-card-desc">${p.desc}</div>
+        <div class="p-card-foot">
+          <span class="p-card-price">${p.price.toLocaleString()} <sub>so'm</sub></span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ====== SELLER HISTORY ======
+function renderSellerHistory() {
+  const container = document.getElementById('sellerHistory');
+  const history = state.liveOrders.filter(o => o.status === 'delivered' || o.status === 'rejected').reverse();
+  if (!history.length) { container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-dim)">📋 Tarix bo\'sh</div>'; return; }
+  container.innerHTML = history.map(o => `
+    <div class="track-card">
+      <div class="track-header"><span class="track-id">#${o.id}</span><span class="track-status ${o.status}">${o.status === 'delivered' ? '✅ Yetkazildi' : '❌ Bekor qilindi'}</span></div>
+      <div class="track-items">${o.items.map(i => `${i.name} x${i.qty}`).join(', ')}</div>
+      <div class="track-total">${o.total.toLocaleString()} so'm</div>
+      <div class="track-time">${new Date(o.time).toLocaleString('uz-UZ')}</div>
+    </div>
+  `).join('');
+}
+
+// ====== DRIVER ======
+function renderDriverDeliveries() {
+  const container = document.getElementById('driverDeliveries');
+  const tasks = state.liveOrders.filter(o => o.status === 'delivering' || o.status === 'ready');
+  const available = tasks.filter(o => o.status === 'ready' && !o.driver);
+  const myTasks = tasks.filter(o => o.driver && o.driver.id === state.user.id);
+
+  let html = '';
+  html += '<h3 style="font-size:0.85rem;color:var(--text-bright);margin-bottom:10px">🆕 Mavjud topshiriqlar</h3>';
+  if (available.length) {
+    available.forEach(o => {
+      html += `<div class="track-card" style="margin-bottom:10px;border-color:var(--gold)">
+        <div class="track-items">#${o.id}: ${o.items.map(i => `${i.name} x${i.qty}`).join(', ')}</div>
+        <div class="track-address">📍 ${o.address}</div>
+        <div class="track-total" style="margin-bottom:8px">${o.total.toLocaleString()} so'm</div>
+        <div><button class="btn-accept" onclick="acceptDelivery(${o.id})">🚚 Olish</button></div>
+      </div>`;
+    });
+  } else {
+    html += '<div style="color:var(--text-dim);font-size:0.8rem;margin-bottom:16px">⏳ Yangi topshiriq kelishini kuting...</div>';
+  }
+
+  html += '<h3 style="font-size:0.85rem;color:var(--text-bright);margin-bottom:10px;margin-top:16px">🟢 Mening yetkazishlarim</h3>';
+  if (myTasks.length) {
+    myTasks.forEach(o => {
+      html += `<div class="track-card" style="margin-bottom:10px">
+        <div class="track-header"><span class="track-id">#${o.id}</span><span class="track-status delivering">Yetkazilmoqda</span></div>
+        <div class="track-items">${o.items.map(i => `${i.name} x${i.qty}`).join(', ')}</div>
+        <div class="track-address">📍 ${o.address}</div>
+        <div class="track-total">${o.total.toLocaleString()} so'm</div>
+        <div style="margin-top:8px"><button class="btn-ready" onclick="completeDelivery(${o.id})">✅ Yetkazildi</button></div>
+      </div>`;
+    });
+  } else {
+    html += '<div style="color:var(--text-dim);font-size:0.8rem">Yo\'q</div>';
+  }
+
+  // Map simulation
+  html += `<div class="driver-map"><div class="driver-map-placeholder"><span class="map-icon">🗺️</span>Xarita integratsiyasi<br><span style="font-size:0.7rem">GPS yo'nalish ko'rsatish</span></div></div>`;
+  container.innerHTML = html;
+}
+
+function acceptDelivery(orderId) {
+  const o = state.liveOrders.find(x => x.id === orderId);
+  if (o) {
+    o.driver = { id:state.user.id, name:state.user.name, phone:state.user.phone };
+    o.status = 'delivering';
+    saveState(); renderAll(); showToast('🚚 Yuk olindi');
+  }
+}
+
+function completeDelivery(orderId) {
+  const o = state.liveOrders.find(x => x.id === orderId);
+  if (o) { o.status = 'delivered'; saveState(); renderAll(); showToast('✅ Yetkazildi'); }
+}
+
+function renderDriverHistory() {
+  const container = document.getElementById('driverHistory');
+  const history = state.liveOrders.filter(o => o.driver && o.driver.id === state.user.id && o.status === 'delivered');
+  if (!history.length) { container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-dim)">📋 Tarix bo\'sh</div>'; return; }
+  container.innerHTML = history.map(o => `
+    <div class="track-card">
+      <div class="track-header"><span class="track-id">#${o.id}</span><span class="track-status delivered">✅ Yetkazildi</span></div>
+      <div class="track-items">${o.items.map(i => `${i.name} x${i.qty}`).join(', ')}</div>
+      <div class="track-address">📍 ${o.address}</div>
+      <div class="track-total">${o.total.toLocaleString()} so'm</div>
+      <div class="track-time">${new Date(o.time).toLocaleString('uz-UZ')}</div>
+    </div>
+  `).join('');
+}
+
+// ====== ADMIN ======
+function renderAdminDashboard() {
+  const orders = state.liveOrders;
+  const activeOrders = orders.filter(o => o.status !== 'delivered' && o.status !== 'rejected');
+  document.getElementById('adminStats').innerHTML = `
+    <div class="admin-card"><div class="admin-icon">👥</div><div class="admin-val">${state.orders.length+5}</div><div class="admin-lbl">Foydalanuvchilar</div></div>
+    <div class="admin-card"><div class="admin-icon">🏪</div><div class="admin-val">${bakeries.length}</div><div class="admin-lbl">Nonvoyxona</div></div>
+    <div class="admin-card"><div class="admin-icon">🚚</div><div class="admin-val">${drivers.length}</div><div class="admin-lbl">Haydovchi</div></div>
+    <div class="admin-card"><div class="admin-icon">📦</div><div class="admin-val">${activeOrders.length}</div><div class="admin-lbl">Faol buyurtma</div></div>
+    <div class="admin-card"><div class="admin-icon">💰</div><div class="admin-val">${activeOrders.reduce((s,o) => s+o.total, 0).toLocaleString()}</div><div class="admin-lbl">Jonli daromad</div></div>
+    <div class="admin-card"><div class="admin-icon">⚡</div><div class="admin-val">100+</div><div class="admin-lbl">Zakaz/soniya</div></div>
+  `;
+  const container = document.getElementById('adminLiveOrders');
+  if (!activeOrders.length) { container.innerHTML = '<div style="color:var(--text-dim);font-size:0.8rem">Faol buyurtma yo\'q</div>'; return; }
+  container.innerHTML = activeOrders.map(o => `<div class="live-order" style="margin-bottom:8px">
+    <div style="display:flex;justify-content:space-between;font-size:0.8rem">
+      <span style="color:var(--text-bright)">#${o.id} · ${o.userName} → ${o.bakery||'ZIYOKOR'}</span>
+      <span class="track-status ${o.status}">${o.status}</span>
+    </div>
+    <div style="font-size:0.72rem;color:var(--text-dim)">${o.items.map(i=>`${i.name} x${i.qty}`).join(', ')} · ${o.total.toLocaleString()} so'm</div>
+  </div>`).join('');
+}
+
+function renderAdminUsers() {
+  const container = document.getElementById('adminUsers');
+  const allUsers = state.orders.map(o => ({name:o.userName,phone:o.userPhone,role:'customer',orders:1}));
+  const unique = [];
+  const seen = new Set();
+  allUsers.forEach(u => { if (!seen.has(u.phone)) { seen.add(u.phone); unique.push(u); }});
+
+  container.innerHTML = `
+    <h3 style="font-size:0.85rem;color:var(--text-bright);margin-bottom:10px">🏪 Nonvoyxonalar</h3>
+    ${bakeries.map(b => `
+      <div class="setting-row"><div><div class="setting-label">🏪 ${b.name}</div><div class="setting-desc">${b.address} · ⭐${b.rating} · ${b.sales} ta</div></div><span class="bakery-status ${b.status}">${b.status==='open'?'🔓 Ish vaqti':'🔒 Yopiq'}</span></div>
+    `).join('')}
+    <h3 style="font-size:0.85rem;color:var(--text-bright);margin:16px 0 10px">🚚 Haydovchilar</h3>
+    ${drivers.map(d => `
+      <div class="setting-row"><div><div class="setting-label">🚚 ${d.name}</div><div class="setting-desc">${d.phone} · ⭐${d.rating} · ${d.deliveries} ta</div></div><span style="font-size:0.7rem;color:${d.status==='free'?'var(--green)':'var(--gold)'}">${d.status==='free'?'🟢 Bo\'sh':'🔴 Band'}</span></div>
+    `).join('')}
+    <h3 style="font-size:0.85rem;color:var(--text-bright);margin:16px 0 10px">👥 Xaridorlar (${unique.length})</h3>
+    ${unique.map(u => `
+      <div class="setting-row"><div><div class="setting-label">👤 ${u.name}</div><div class="setting-desc">${u.phone} · ${u.orders} ta buyurtma</div></div></div>
+    `).join('')}
+  `;
+}
+
+// ====== CART ======
+function updateCartUI() {
+  const count = state.cart.reduce((s, x) => s + x.qty, 0);
+  document.getElementById('cartBadge').textContent = count;
+  const body = document.getElementById('cartBody');
+  if (!state.cart.length) {
+    body.innerHTML = '<div class="cart-drw-empty">🛒 Savat bo\'sh</div>';
+    document.getElementById('cartTotal').textContent = '0 so\'m';
+    return;
+  }
+  body.innerHTML = state.cart.map(item => `
+    <div class="cart-drw-item">
+      <div class="cart-drw-item-img"><img src="${BREAD_IMG}" alt="${item.name}"></div>
+      <div class="cart-drw-item-info"><div class="cart-drw-item-name">${item.name}</div><div class="cart-drw-item-price">${(item.price*item.qty).toLocaleString()} so'm</div></div>
+      <div class="cart-drw-item-qty">
+        <button class="cart-drw-qty-btn" onclick="cartQty(${item.id},-1)">−</button>
+        <span class="cart-drw-qty">${item.qty}</span>
+        <button class="cart-drw-qty-btn" onclick="cartQty(${item.id},1)">+</button>
+      </div>
+    </div>
+  `).join('');
+  const total = state.cart.reduce((s, x) => s + x.price * x.qty, 0);
   document.getElementById('cartTotal').textContent = total.toLocaleString() + ' so\'m';
 }
 
-function updQty(id, d) {
-  const idx = cart.findIndex(x => x.id === id);
+function cartQty(id, d) {
+  const idx = state.cart.findIndex(x => x.id === id);
   if (idx === -1) return;
-  cart[idx].qty += d;
-  if (cart[idx].qty <= 0) cart.splice(idx, 1);
-  updateBadge(); renderCartBody();
+  state.cart[idx].qty += d;
+  if (state.cart[idx].qty <= 0) state.cart.splice(idx, 1);
+  saveState(); updateCartUI(); renderProducts();
 }
 
-function openCart() { renderCartBody(); document.getElementById('cartDrawer').classList.add('open'); }
+function openCart() { updateCartUI(); document.getElementById('cartDrawer').classList.add('open'); }
 function closeCart() { document.getElementById('cartDrawer').classList.remove('open'); }
 
-function checkout() {
-  if (!cart.length) { showToast('⚠️ Savat bo\'sh'); return; }
-  const note = document.getElementById('orderNote').value.trim();
-  let msg = '🎉 Buyurtmangiz qabul qilindi!';
-  const total = cart.reduce((s, x) => s + x.price * x.qty, 0);
-  let orderText = 'Assalomu alaykum! Men buyurtma bermoqchiman:\n';
-  cart.forEach(x => { orderText += `- ${x.name} x${x.qty} = ${(x.price*x.qty).toLocaleString()} so'm\n`; });
-  orderText += `\nJami: ${total.toLocaleString()} so'm`;
-  if (note) orderText += `\n\nEslatma: ${note}`;
-  const encoded = encodeURIComponent(orderText);
-  window.open(`https://wa.me/998993921157?text=${encoded}`, '_blank');
-  showToast(msg);
-  cart = []; updateBadge(); renderCartBody(); closeCart();
-  document.getElementById('orderNote').value = '';
+function showOrderModal() {
+  if (!state.cart.length) { showToast('⚠️ Savat bo\'sh'); return; }
+  const total = state.cart.reduce((s, x) => s + x.price * x.qty, 0);
+  const itemsHtml = state.cart.map(x => `<div class="order-confirm-item"><span>${x.name} x${x.qty}</span><span>${(x.price*x.qty).toLocaleString()} so'm</span></div>`).join('');
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML = `
+    <button class="modal-close-btn" onclick="closeModal()">✕</button>
+    <h2>📦 Buyurtmani tasdiqlash</h2>
+    ${itemsHtml}
+    <div class="order-confirm-total"><span>Jami</span><span>${total.toLocaleString()} so'm</span></div>
+    <div class="order-confirm-addr">
+      <textarea id="orderAddress" placeholder="Manzilingizni kiriting (ko\'cha, uy, xonadon)" rows="3">Namangan shahar</textarea>
+    </div>
+    <button class="order-confirm-btn" onclick="placeOrder()">✅ Buyurtma berish</button>
+  `;
+  document.getElementById('modalOverlay').classList.add('active');
 }
 
-// ======== TOAST ========
+function placeOrder() {
+  const address = document.getElementById('orderAddress').value.trim() || 'Namangan shahar';
+  if (state.cart.length === 0) { showToast('⚠️ Savat bo\'sh'); return; }
+  const total = state.cart.reduce((s, x) => s + x.price * x.qty, 0);
+  const order = {
+    id: ++state.nextOrderId,
+    userId: state.user.id,
+    userName: state.user.name,
+    userPhone: state.user.phone,
+    items: state.cart.map(x => ({id:x.id, name:x.name, qty:x.qty, price:x.price})),
+    total,
+    address,
+    bakery: 'Raximjon Nonvoyxonasi',
+    status: 'pending',
+    time: Date.now(),
+    driver: null,
+  };
+  state.liveOrders.unshift(order);
+  state.orders.push(order);
+  state.cart = [];
+  saveState(); updateCartUI(); renderProducts(); renderCustomerOrders(); closeCart(); closeModal();
+  showToast(`🎉 #${order.id} buyurtma qabul qilindi! Sotuvchi tasdiqlashini kuting.`);
+
+  // Simulate real-time: auto-accept after 3s
+  setTimeout(() => {
+    const o = state.liveOrders.find(x => x.id === order.id);
+    if (o && o.status === 'pending') {
+      o.status = 'accepted';
+      saveState(); renderAll();
+      showToast(`🔵 #${order.id} buyurtmangiz qabul qilindi!`);
+      // Auto-baking after 5s
+      setTimeout(() => {
+        const o2 = state.liveOrders.find(x => x.id === order.id);
+        if (o2 && o2.status === 'accepted') { o2.status = 'baking'; saveState(); renderAll(); showToast(`🟠 #${order.id} nonlaringiz tayyorlanmoqda`); }
+        // Auto-ready after 8s
+        setTimeout(() => {
+          const o3 = state.liveOrders.find(x => x.id === order.id);
+          if (o3 && o3.status === 'baking') { o3.status = 'ready'; saveState(); renderAll(); showToast(`✅ #${order.id} nonlaringiz tayyor! Yetkazib berish kutilmoqda`); }
+          // Auto-assign driver after 3s
+          setTimeout(() => {
+            const o4 = state.liveOrders.find(x => x.id === order.id);
+            const freeD = drivers.find(d => d.status === 'free');
+            if (o4 && o4.status === 'ready' && freeD) {
+              freeD.status = 'delivering';
+              o4.status = 'delivering';
+              o4.driver = { id:freeD.id, name:freeD.name, phone:freeD.phone };
+              saveState(); renderAll(); showToast(`🚚 ${freeD.name} nonlaringizni yetkazmoqda!`);
+              // Auto-deliver after 10s
+              setTimeout(() => {
+                const o5 = state.liveOrders.find(x => x.id === order.id);
+                if (o5 && o5.status === 'delivering') { o5.status = 'delivered'; saveState(); renderAll(); showToast(`✅ #${order.id} yetkazildi! Mazali nonlaringizdan lazzatlaning 🎉`); }
+              }, 10000);
+            }
+          }, 3000);
+        }, 8000);
+      }, 5000);
+    }
+  }, 3000);
+}
+
+function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); }
+
+// ====== SETTINGS ======
+function toggleSetting(btn) { btn.classList.toggle('on'); }
+
+// ====== TOAST ======
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   clearTimeout(window._toastTimer);
-  window._toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-// ======== INIT ========
+// ====== PRODUCT MODAL ======
+function openProductModal(id) {
+  const p = products.find(x => x.id === id);
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML = `
+    <button class="modal-close-btn" onclick="closeModal()">✕</button>
+    <div style="text-align:center;margin-bottom:16px">
+      <img src="${BREAD_IMG}" style="width:180px;height:180px;border-radius:16px;object-fit:cover">
+    </div>
+    <h2>${p.name}</h2>
+    <div style="color:var(--gold);font-size:1.2rem;font-weight:700;margin:6px 0 12px">${p.price.toLocaleString()} so'm</div>
+    <p style="color:var(--text-dim);font-size:0.85rem;margin-bottom:16px">${p.desc}</p>
+    <button class="order-confirm-btn" onclick="quickAdd(${p.id});closeModal()">🛒 Savatga qo'shish</button>
+  `;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+// ====== REAL-TIME SYNC (simulated) ======
+setInterval(() => {
+  if (state.user) { saveState(); renderAll(); }
+}, 2000);
+
+// ====== INIT CHECK ======
 (function() {
-  renderProducts();
-  document.getElementById('searchInput').addEventListener('keydown', e => {
-    if (e.key === 'Escape') { e.target.value = ''; renderProducts(); }
-  });
+  const saved = getState();
+  if (saved.user) {
+    state = saved;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').classList.add('active');
+    const u = state.user;
+    document.getElementById('navRoleLabel').textContent =
+      u.role==='customer'?'🛒 Xaridor':u.role==='seller'?'🏪 Nonvoy':u.role==='driver'?'🚚 Haydovchi':'⚙️ Admin';
+    document.getElementById('navUserName').textContent = u.name;
+    document.getElementById('sName').textContent = u.name;
+    document.getElementById('sPhone').textContent = u.phone;
+    initApp();
+    getGPS();
+  }
 })();
 </script>
 </body>
