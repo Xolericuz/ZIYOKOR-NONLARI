@@ -88,7 +88,7 @@ label{font-size:0.75rem;color:var(--text-dim);margin-bottom:4px;display:block}
 .modal{background:rgba(16,12,8,0.97);border:1px solid var(--glass-border);border-radius:20px;max-width:460px;width:90vw;padding:24px;max-height:85vh;overflow-y:auto;transform:scale(0.92);transition:transform 0.3s cubic-bezier(0.16,1,0.3,1)}
 .modal-overlay.active .modal{transform:scale(1)}
 
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(16,12,8,0.95);border:1px solid var(--glass-border);backdrop-filter:blur(20px);color:var(--text);border-radius:100px;padding:10px 22px;font-size:0.78rem;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,0.4);display:none;white-space:nowrap}
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);background:rgba(16,12,8,0.95);border:1px solid var(--glass-border);backdrop-filter:blur(20px);color:var(--text);border-radius:12px;padding:12px 20px;font-size:0.82rem;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,0.4);display:none;max-width:90vw;text-align:center;line-height:1.4}
 .toast.show{display:block;animation:fadeIn 0.3s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
@@ -832,6 +832,47 @@ function placeOrder() {
     createdAt: Date.now(),
   };
 
+  // ---- CONFIRMATION STEP ----
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML = `
+    <h2 style="font-size:1.1rem;color:var(--text-bright);margin-bottom:14px">✅ Buyurtmani tasdiqlang</h2>
+    <div style="font-size:0.8rem;color:var(--text-dim);margin-bottom:12px">
+      <div style="margin-bottom:8px">
+        <span style="color:var(--text-bright)">🏪 ${order.bakeryName}</span>
+      </div>
+      ${items.map(i => `
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--glass-border)">
+          <span>${i.name} x${i.qty}</span>
+          <span style="color:var(--gold)">${(i.price * i.qty).toLocaleString()} so'm</span>
+        </div>
+      `).join('')}
+      <div style="display:flex;justify-content:space-between;font-weight:700;color:var(--gold);padding:8px 0">
+        <span>Jami</span><span>${total.toLocaleString()} so'm</span>
+      </div>
+      <div style="font-size:0.72rem;margin-top:8px">
+        <div>📍 Yetkazish: ${address}</div>
+        <div>📞 ${myPhone}</div>
+        ${myLat && myLng ? `<div>📍 GPS: ${myLat.toFixed(5)}, ${myLng.toFixed(5)}</div>` : ''}
+      </div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="document.getElementById('modalContent').innerHTML = \`<button class='btn btn-ghost btn-sm' style='float:right' onclick='closeModal()'>✕</button><p style='text-align:center;color:var(--text-dim);padding:20px 0'>❌ Bekor qilindi</p>\`">❌ Bekor qilish</button>
+      <button class="btn btn-success" style="flex:1;justify-content:center" onclick="confirmOrder()">✅ Tasdiqlash</button>
+    </div>
+  `;
+
+  // Store order data temporarily
+  window._pendingOrder = order;
+  window._pendingItems = items;
+  window._pendingOrderId = orderId;
+}
+
+function confirmOrder() {
+  const order = window._pendingOrder;
+  const items = window._pendingItems;
+  const orderId = window._pendingOrderId;
+  if (!order) return;
+
   gun.get('orders').get(orderId).put(order);
 
   if (order.bakeryId) {
@@ -843,18 +884,32 @@ function placeOrder() {
 
   cart = {};
   selectedBakeryId = null;
-  closeModal();
   updateCartFab();
   document.getElementById('cartFab')?.remove();
-
-  showToast(`📡 #${orderId.slice(-6)} buyurtma yuborildi!`);
 
   if (myRole === 'seller') {
     orders[orderId] = { ...order, id: orderId };
     myOrders[orderId] = { ...order, id: orderId };
   }
 
-  render();
+  // Show success screen in modal
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML = `
+    <div style="text-align:center;padding:20px 0">
+      <div style="font-size:3rem;margin-bottom:12px">✅</div>
+      <h2 style="font-size:1.2rem;color:var(--text-bright);margin-bottom:6px">Buyurtma yuborildi!</h2>
+      <p style="font-size:0.8rem;color:var(--text-dim);margin-bottom:4px">#${orderId.slice(-8)}</p>
+      <p style="font-size:0.7rem;color:var(--green);margin-bottom:20px">📍 ${order.address}</p>
+      <div style="display:flex;gap:10px;flex-direction:column">
+        <button class="btn btn-primary" style="justify-content:center" onclick="closeModal(); switchTab(2); render()">📦 Buyurtmalarim</button>
+        <button class="btn btn-ghost" style="justify-content:center" onclick="closeModal()">⬅ Davom etish</button>
+      </div>
+    </div>
+  `;
+
+  window._pendingOrder = null;
+  window._pendingItems = null;
+  window._pendingOrderId = null;
 }
 
 // ====== DELIVERY VIEWS ======
