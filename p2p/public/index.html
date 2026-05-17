@@ -1078,16 +1078,25 @@ function settingsView() {
 
 function checkUpdate() {
   showToast('🔄 Yangilanish tekshirilmoqda...');
-  fetch('./version.json?_=' + Date.now())
+  fetch('https://api.github.com/repos/Xolericuz/ZIYOKOR-NONLARI/releases/latest')
     .then(r => r.json())
     .then(data => {
-      if (data.version && data.version > '3.0.0') {
-        showToast(`📥 Yangi versiya ${data.version} mavjud!`);
+      const latest = data.tag_name?.replace('v','') || '';
+      if (latest && latest > '3.0.0') {
+        showToast(`📥 Yangi versiya ${latest} mavjud!`);
       } else {
         showToast('✅ Siz eng so\'nggi versiyadasiz');
       }
     })
-    .catch(() => showToast('⚠️ Yangilanishni tekshirib bo\'lmadi'));
+    .catch(() => {
+      fetch('./version.json?_=' + Date.now())
+        .then(r => r.json())
+        .then(data => {
+          if (data.version && data.version > '3.0.0') showToast(`📥 Yangi versiya ${data.version} mavjud!`);
+          else showToast('✅ Siz eng so\'nggi versiyadasiz');
+        })
+        .catch(() => showToast('⚠️ Yangilanishni tekshirib bo\'lmadi'));
+    });
 }
 
 function downloadUpdate() {

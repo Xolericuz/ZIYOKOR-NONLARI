@@ -84,6 +84,17 @@ app.post('/api/flush', (req, res) => {
   res.json({ ok: true, message: 'Data persists automatically via Gun.js radisk' });
 });
 
+// API: Version info
+app.get('/api/version', (req, res) => {
+  res.json({
+    version: '3.0.0',
+    name: 'ZIYOKOR NONLARI',
+    platform: 'p2p-web',
+    apkUrl: 'https://github.com/Xolericuz/ZIYOKOR-NONLARI/releases/download/latest/ziyokor-nonlari.apk',
+    updateUrl: 'https://github.com/Xolericuz/ZIYOKOR-NONLARI/releases/latest',
+  });
+});
+
 // Serve the main app
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
