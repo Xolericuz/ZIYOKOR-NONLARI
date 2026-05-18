@@ -1,11 +1,13 @@
 {
   "appId": "uz.ziyokor.nonlari",
-  "appName": "ZIYOKOR NONLARI",
+  "appName": "ZIYOKOR-NONLARI",
   "webDir": "www",
   "bundledWebRuntime": false,
   "server": {
     "androidScheme": "https",
-    "allowNavigation": ["*"]
+    "allowNavigation": [
+      "*"
+    ]
   },
   "plugins": {
     "SplashScreen": {
@@ -21,7 +23,10 @@
       "overlaysWebView": false
     },
     "Geolocation": {
-      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"]
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ]
     }
   }
 }
